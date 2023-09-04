@@ -4,6 +4,7 @@ import uz.raytracing.components.Frame;
 import uz.raytracing.components.Panel;
 import uz.raytracing.components.SplitPane;
 import uz.raytracing.components.Viewport;
+import uz.raytracing.util.Image;
 import uz.raytracing.util.Timer;
 
 import javax.swing.JButton;
@@ -28,8 +29,11 @@ public class Application {
 
     public void start() {
         while (true) {
-            mViewport.setImage(mRenderer.getmFinalImage());
-            mViewport.repaint();
+            Image image = mRenderer.getmFinalImage();
+            if(image != null) {
+                mViewport.setImage(image);
+                mViewport.repaint();
+            }
             render();
         }
     }

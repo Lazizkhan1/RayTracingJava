@@ -18,6 +18,12 @@ public class Property {
         try {
             if (!propertiesFile.createNewFile()) {
                 properties.load(new FileInputStream(propertiesFile));
+            } else {
+                properties.put("WindowWidth", "300");
+                properties.put("WindowHeight", "300");
+                properties.put("WindowLocationX", "500");
+                properties.put("WindowLocationY", "500");
+                properties.put("DividerLocation", "3");
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -36,9 +42,9 @@ public class Property {
 
     public static int get(String key) {
         String value = properties.getProperty(key);
-        if (value.isEmpty())
-            return 0;
-        return Integer.parseInt(value);
+        if (value == null)
+            return 1;
+        return Math.max(Integer.parseInt(value), 1);
     }
 
 }

@@ -12,17 +12,17 @@ import java.util.HashMap;
 public class Frame extends JFrame {
     public Frame(String title) {
         super(title);
-        setSize(Property.get("FrameWidth"), Property.get("FrameHeight"));
-        setLocation(Property.get("FrameLocationX"), Property.get("FrameLocationY"));
+        setSize(Property.get("WindowWidth"), Property.get("WindowHeight"));
+        setLocation(Property.get("WindowLocationX"), Property.get("WindowLocationY"));
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 HashMap<String, String> propertiesTable = new HashMap<>();
-                propertiesTable.put("FrameWidth", getWidth() + "");
-                propertiesTable.put("FrameHeight", getHeight() + "");
-                propertiesTable.put("FrameLocationX", getLocationOnScreen().x + "");
-                propertiesTable.put("FrameLocationY", getLocationOnScreen().y + "");
+                propertiesTable.put("WindowWidth", getWidth() + "");
+                propertiesTable.put("WindowHeight", getHeight() + "");
+                propertiesTable.put("WindowLocationX", getLocationOnScreen().x + "");
+                propertiesTable.put("WindowLocationY", getLocationOnScreen().y + "");
                 propertiesTable.put("DividerLocation", ((SplitPane) (((Frame) e.getSource()).getContentPane().getComponent(0))).getDividerLocation() + "");
                 Property.set(propertiesTable);                       //I know this is piece of shit, but I couldn't find other shorter way :/
                 super.windowClosing(e);
