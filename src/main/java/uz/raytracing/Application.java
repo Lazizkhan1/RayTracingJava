@@ -1,44 +1,51 @@
 package uz.raytracing;
 
-import uz.raytracing.util.Viewport;
+import uz.raytracing.components.Frame;
+import uz.raytracing.components.Panel;
+import uz.raytracing.components.SplitPane;
+import uz.raytracing.components.Viewport;
+import uz.raytracing.util.Image;
+import uz.raytracing.util.Timer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import java.awt.BorderLayout;
 
 public class Application {
-    private final JFrame mMainFrame;
     private final Viewport mViewport;
-//    private int mViewportWidth;
-//    private int mViewportHeight;
     private final Renderer mRenderer;
+    private final JLabel frameTime;
 
     public Application() {
-        mMainFrame = new JFrame("RayTracing");
-        mMainFrame.setSize(800, 600);
-        mMainFrame.setLocationRelativeTo(null);
-        mMainFrame.setLayout(new GridLayout());
-        mMainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
         mViewport = new Viewport();
         mRenderer = new Renderer();
-        mMainFrame.add(mViewport);
-        mMainFrame.setVisible(true);
-
+        JButton renderButton = new JButton("Render");
+        frameTime = new JLabel();
+        SplitPane splitPane = new SplitPane(mViewport, new Panel(frameTime, renderButton));
+        Frame frame = new Frame("Ray Tracing");
+        frame.add(splitPane, BorderLayout.CENTER);
+        frame.setVisible(true);
     }
 
     public void start() {
         new Thread(() -> {
             while (true) {
-                mRenderer.onResize(mViewport.getWidth(), mViewport.getHeight());
-                mRenderer.render();
-                mViewport.setImage(mRenderer.getmFinalImage());
-                mViewport.repaint();
-
+                Image image = mRenderer.getmFinalImage();
+                if(image != null) {
+                    mViewport.setImage(image);
+                    mViewport.repaint();
+                }
+                render();
             }
         }).start();
     }
 
+    public void render() {
+        Timer timer = new Timer();
+        mRenderer.onResize(mViewport.getWidth(), mViewport.getHeight());
+        mRenderer.render();
+        frameTime.setText("Frametime: " + timer.calculate());
+    }
     public static void main(String[] args) {
         Application application = new Application();
         application.start();
