@@ -7,8 +7,8 @@ public class Timer {
         previousTime = System.nanoTime();
     }
 
-    @Override
-    public String toString() {
+
+    public String calculate() {
         long currentTime = System.nanoTime();
         float frameTime = (currentTime - previousTime) / 1000000.0f;
         previousTime = currentTime;
