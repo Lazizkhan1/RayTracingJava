@@ -2,8 +2,9 @@ package uz.raytracing.components;
 
 import uz.raytracing.util.Property;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
@@ -28,6 +29,10 @@ public class Frame extends JFrame {
 
             }
         });
+    }
+    public Frame(String title, Component... components) {
+        super(title);
+        add(components);
     }
 
     public void add(Component... components) {
