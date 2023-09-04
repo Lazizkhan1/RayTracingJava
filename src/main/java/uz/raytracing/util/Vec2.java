@@ -1,14 +1,26 @@
 package uz.raytracing.util;
 
-public class Vec2<T> {
-    public T x;
-    public T y;
+public class Vec2 {
+    public float x;
+    public float y;
 
     public Vec2() {
     }
 
-    public Vec2(T x, T y) {
+    public Vec2(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Vec2 mul(float t) {
+        this.x = this.x * t;
+        this.y = this.y * t;
+        return this;
+    }
+
+    public Vec2 sub(float t) {
+        this.x = this.x - t;
+        this.y = this.y - t;
+        return this;
     }
 }
