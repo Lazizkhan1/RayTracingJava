@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 
 public class Viewport extends JPanel {
-    private uz.raytracing.util.Image image;
+    private Image image;
 
     public void setImage(Image image) {
         this.image = image;
