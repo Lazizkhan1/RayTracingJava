@@ -1,11 +1,13 @@
-package uz.raytracing.util;
+package uz.raytracing.components;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import uz.raytracing.util.Image;
 
-public class Viewport extends JPanel{
-    private Image image;
+import javax.swing.JPanel;
+import java.awt.Graphics;
+
+public class Viewport extends JPanel {
+    private uz.raytracing.util.Image image;
+
     public void setImage(Image image) {
         this.image = image;
     }
