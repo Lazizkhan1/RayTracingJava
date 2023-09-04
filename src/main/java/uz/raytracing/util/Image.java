@@ -23,7 +23,18 @@ public class Image extends BufferedImage {
      * Calling setRGB() method with image width, and height
      */
     public void setData(int[] rgbArray) {
-        setRGB(0, 0, getWidth(), getHeight(), rgbArray, 0, getWidth());
-    }
+        int h = getHeight();
+        int w = getWidth();
+        int yoff = 0;
+        int off;
+        Object pixel = null;
 
+        for (int y = h - 1; y > 0; y--, yoff += w) {
+            off = yoff;
+            for (int x = 0; x < w; x++) {
+                pixel = getColorModel().getDataElements(rgbArray[off++], pixel);
+                getRaster().setDataElements(x, y, pixel);
+            }
+        }
+    }
 }

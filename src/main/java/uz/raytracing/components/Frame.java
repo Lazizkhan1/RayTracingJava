@@ -35,6 +35,10 @@ public class Frame extends JFrame {
         add(components);
     }
 
+    public Frame() {
+        super("");
+    }
+
     public void add(Component... components) {
         for (Component comp : components)
             add(comp);

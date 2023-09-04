@@ -12,15 +12,12 @@ import java.awt.BorderLayout;
 
 public class Test {
     public static void main(String[] args) {
-        JButton button = new JButton("Render");
-        JLabel label = new JLabel("Framerate");
-        Panel controlPanel = new Panel(label, button);
-        Viewport viewport = new Viewport();
-        SplitPane splitPane = new SplitPane(viewport, controlPanel);
-        Frame frame = new Frame("Test");
-
-        frame.add(splitPane, BorderLayout.CENTER);
-        frame.setVisible(true);
+//        JButton button = new JButton("Render");
+//        Viewport viewport = new Viewport();
+//        Frame frame = new Frame("Test");
+//
+//        frame.add(splitPane, BorderLayout.CENTER);
+//        frame.setVisible(true);
 
     }
 

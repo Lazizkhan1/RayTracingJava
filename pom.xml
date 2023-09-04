@@ -15,6 +15,11 @@
     </properties>
     <dependencies>
 
+        <dependency>
+            <groupId>io.github.java-graphics</groupId>
+            <artifactId>glm</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 
 </project>
