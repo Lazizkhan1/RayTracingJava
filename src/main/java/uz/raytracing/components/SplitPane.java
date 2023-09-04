@@ -12,6 +12,6 @@ public class SplitPane extends JSplitPane {
         super(HORIZONTAL_SPLIT, newLeftComponent, newRightComponent);
         setDividerLocation(Property.get("DividerLocation"));
         setResizeWeight(1.0);
-        setDividerSize(5);
+        setDividerSize(4);
     }
 }
