@@ -124,7 +124,7 @@
       </item>
     </group>
     <group name="Custom">
-      <item class="uz.raytracing.util.Viewport" icon="javax/swing/plaf/metal/icons/ocean/paletteClose.gif" removable="true" auto-create-binding="false" can-attach-label="false">
+      <item class="uz.raytracing.components.Viewport" icon="javax/swing/plaf/metal/icons/ocean/paletteClose.gif" removable="true" auto-create-binding="false" can-attach-label="false">
         <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
       </item>
     </group>
