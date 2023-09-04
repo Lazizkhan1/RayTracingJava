@@ -1,6 +1,6 @@
 package uz.raytracing;
 
-import uz.raytracing.util.Image;
+import uz.raytracing.util.Vec2;
 
 public interface IRenderer {
 
@@ -8,5 +8,6 @@ public interface IRenderer {
 
     void render();
 
+    int perPixel(Vec2<Float> coord);
 
 }
