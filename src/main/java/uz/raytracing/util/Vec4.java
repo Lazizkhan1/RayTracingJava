@@ -1,5 +1,7 @@
 package uz.raytracing.util;
 
+import jglm.Mat;
+
 public class Vec4 {
     public float x;
     public float y;
@@ -47,5 +49,15 @@ public class Vec4 {
         return new Vec3(this.x, this.y, this.z);
     }
 
+    public static Vec4 clamp(Vec4 vec4, float min, float max) {
+        return new Vec4(clamp_(vec4.x, min, max),
+                clamp_(vec4.y, min, max),
+                clamp_(vec4.z, min, max),
+                clamp_(vec4.w, min, max));
+    }
+
+    public static float clamp_(float t, float min, float max) {
+        return Math.max(Math.min(t, max), min);
+    }
 
 }
