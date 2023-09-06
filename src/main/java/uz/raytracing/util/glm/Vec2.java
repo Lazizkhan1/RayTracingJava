@@ -1,4 +1,4 @@
-package uz.raytracing.util;
+package uz.raytracing.util.glm;
 
 public class Vec2 {
     public float x;

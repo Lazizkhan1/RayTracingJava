@@ -1,6 +1,4 @@
-package uz.raytracing.util;
-
-import jglm.Mat;
+package uz.raytracing.util.glm;
 
 public class Vec4 {
     public float x;

@@ -8,10 +8,10 @@ public class Timer {
     }
 
 
-    public String calculate() {
+    public float getDeltaTime() {
         long currentTime = System.nanoTime();
         float frameTime = (currentTime - previousTime) / 1000000.0f;
         previousTime = currentTime;
-        return String.format("%.3f", frameTime);
+        return frameTime / 1000.0f;
     }
 }

@@ -15,34 +15,40 @@ public class Application {
     private final Viewport mViewport;
     private final Renderer mRenderer;
     private final JLabel frameTime;
+    private final Camera mCamera;
 
     public Application() {
         mViewport = new Viewport();
         mRenderer = new Renderer();
+        mCamera = new Camera();
         JButton renderButton = new JButton("Render");
         frameTime = new JLabel();
         SplitPane splitPane = new SplitPane(mViewport, new Panel(frameTime, renderButton));
-        Frame frame = new Frame("Ray Tracing");
+        Frame frame = new Frame("Ray Tracing", mCamera);
         frame.add(splitPane, BorderLayout.CENTER);
+        frame.setFocusable(true);
+        frame.requestFocus();
         frame.setVisible(true);
     }
 
     public void start() {
+        Timer timer = new Timer();
         while (true) {
             Image image = mRenderer.getmFinalImage();
-            if(image != null) {
+            if (image != null) {
                 mViewport.setImage(image);
                 mViewport.repaint();
             }
-            render();
+            render(timer);
         }
     }
 
-    public void render() {
-        Timer timer = new Timer();
+    public void render(Timer timer) {
+        float ts = timer.getDeltaTime();
         mRenderer.onResize(mViewport.getWidth(), mViewport.getHeight());
-        mRenderer.render();
-        frameTime.setText("Frametime: " + timer.calculate());
+        mCamera.onUpdate(ts);
+        mRenderer.render(mCamera);
+        frameTime.setText(String.format("FrameTime: %.3f", ts * 1000));
     }
 
     public static void main(String[] args) {

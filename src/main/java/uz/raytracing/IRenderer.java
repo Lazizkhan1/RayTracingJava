@@ -1,14 +1,13 @@
 package uz.raytracing;
 
-import uz.raytracing.util.Vec2;
-import uz.raytracing.util.Vec4;
+import uz.raytracing.util.glm.Vec4;
 
 public interface IRenderer {
 
     void onResize(int width, int height);
 
-    void render();
+    void render(Camera camera);
 
-    Vec4 perPixel(Vec2 coord);
+    Vec4 traceRay(Ray ray);
 
 }

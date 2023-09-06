@@ -1,14 +1,5 @@
 package uz.raytracing.test;
 
-import uz.raytracing.components.Frame;
-import uz.raytracing.components.Panel;
-import uz.raytracing.components.SplitPane;
-import uz.raytracing.components.Viewport;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import java.awt.BorderLayout;
-
 
 public class Test {
     public static void main(String[] args) {
