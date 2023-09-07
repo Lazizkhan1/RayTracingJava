@@ -1,7 +1,5 @@
 package uz.raytracing.components;
 
-import uz.raytracing.util.Image;
-
 import javax.swing.JPanel;
 import java.awt.Graphics;
 

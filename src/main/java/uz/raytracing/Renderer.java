@@ -3,8 +3,7 @@ package uz.raytracing;
 
 import uz.raytracing.util.glm.Glm;
 import uz.raytracing.util.glm.Vec3;
-import uz.raytracing.util.glm.Vec2;
-import uz.raytracing.util.Image;
+import uz.raytracing.components.Image;
 import uz.raytracing.util.glm.Vec4;
 
 import java.awt.image.BufferedImage;
@@ -28,9 +27,7 @@ public class Renderer implements IRenderer {
         ray.origin = camera.getPosition();
         for (int y = 0; y < mFinalImage.getHeight(); y++) {
             for (int x = 0; x < mFinalImage.getWidth(); x++) {
-                Vec2 coord = new Vec2(x / (float) mFinalImage.getWidth(), y / (float) mFinalImage.getHeight());
-                coord = coord.mul(2.0f).sub(1.0f);
-                ray.direction = new Vec3(coord.x, coord.y, -1.0f);
+                ray.direction = camera.getRayDirections().get(x + y * mFinalImage.getWidth());
                 Vec4 color = traceRay(ray);
                 color = Vec4.clamp(color, 0.0f, 1.0f);
                 mImageData[x + y * mFinalImage.getWidth()] = convertARGB(color);
@@ -59,9 +56,9 @@ public class Renderer implements IRenderer {
 
 
         Vec3 hitPoint = ray.origin.add(ray.direction.mul(closestT));
-        Vec3 normal = hitPoint.normalize();
+        Vec3 normal = Glm.normalize(hitPoint);
 
-        Vec3 lightDirection = new Vec3(-1, -1, -1).normalize();
+        Vec3 lightDirection = Glm.normalize(new Vec3(-1, -1, -1));
 
         float lightIntensity = Math.max(Glm.dot(normal, lightDirection.neg()), 0.0f);
 

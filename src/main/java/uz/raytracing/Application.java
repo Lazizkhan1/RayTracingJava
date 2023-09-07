@@ -4,7 +4,7 @@ import uz.raytracing.components.Frame;
 import uz.raytracing.components.Panel;
 import uz.raytracing.components.SplitPane;
 import uz.raytracing.components.Viewport;
-import uz.raytracing.util.Image;
+import uz.raytracing.components.Image;
 import uz.raytracing.util.Timer;
 
 import javax.swing.JButton;
@@ -20,7 +20,7 @@ public class Application {
     public Application() {
         mViewport = new Viewport();
         mRenderer = new Renderer();
-        mCamera = new Camera();
+        mCamera = new Camera(45.0f, 0.1f, 100.0f);
         JButton renderButton = new JButton("Render");
         frameTime = new JLabel();
         SplitPane splitPane = new SplitPane(mViewport, new Panel(frameTime, renderButton));
@@ -46,9 +46,10 @@ public class Application {
     public void render(Timer timer) {
         float ts = timer.getDeltaTime();
         mRenderer.onResize(mViewport.getWidth(), mViewport.getHeight());
+        mCamera.onResize(mViewport.getWidth(), mViewport.getHeight());
         mCamera.onUpdate(ts);
         mRenderer.render(mCamera);
-        frameTime.setText(String.format("FrameTime: %.3f", ts * 1000));
+        frameTime.setText(String.format("FrameTime: %.3fms", ts * 1000));
     }
 
     public static void main(String[] args) {

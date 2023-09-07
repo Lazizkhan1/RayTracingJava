@@ -12,10 +12,17 @@ public class Vec3 {
         this.y = 0.0f;
         this.z = 0.0f;
     }
+
     public Vec3(float t) {
         this.x = t;
         this.y = t;
         this.z = t;
+    }
+
+    public Vec3(Vec4 v) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
     }
 
     public Vec3(float x, float y, float z) {
@@ -31,9 +38,11 @@ public class Vec3 {
     public Vec3 add(Vec3 a) {
         return new Vec3(this.x + a.x, this.y + a.y, this.z + a.z);
     }
+
     public Vec3 add(float t) {
         return new Vec3(this.x + t, this.y + t, this.z + t);
     }
+
     public Vec3 sub(Vec3 a) {
         return new Vec3(this.x - a.x, this.y - a.y, this.z - a.z);
     }
@@ -50,20 +59,16 @@ public class Vec3 {
         return new Vec3(this.x * t, this.y * t, this.z * t);
     }
 
+    public Vec3 div(float t) {
+        return new Vec3(this.x / t, this.y / t, this.z / t);
+    }
+
     public float length_squared() {
         return x * x + y * y + z * z;
     }
 
     public float length() {
         return (float) sqrt(length_squared());
-    }
-
-    public Vec3 normalize() {
-        float length = this.length();
-        this.x = this.x / length;
-        this.y = this.y / length;
-        this.z = this.z / length;
-        return this;
     }
 
     public void equal(Vec3 a) {

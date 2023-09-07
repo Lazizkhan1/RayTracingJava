@@ -6,10 +6,6 @@ public class Vec4 {
     public float z;
     public float w;
 
-    public float r = x;
-    public float g = y;
-    public float b = z;
-    public float a = w;
 
     public Vec4(float x, float y, float z, float w) {
         this.x = x;
@@ -43,6 +39,7 @@ public class Vec4 {
         this.w *= t;
         return this;
     }
+
     public Vec3 xyz() {
         return new Vec3(this.x, this.y, this.z);
     }

@@ -1,4 +1,4 @@
-package uz.raytracing.util;
+package uz.raytracing.components;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
