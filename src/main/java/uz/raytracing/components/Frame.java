@@ -1,13 +1,21 @@
 package uz.raytracing.components;
 
 import uz.raytracing.Camera;
+import uz.raytracing.util.Mouse;
 import uz.raytracing.util.Property;
-import uz.raytracing.util.glm.Vec2;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
@@ -38,34 +46,26 @@ public class Frame extends JFrame {
     @Override
     public void setVisible(boolean b) {
         Viewport viewport = (Viewport) ((SplitPane) getContentPane().getComponent(0)).getComponent(0);
-        Vec2 lastCursorPosition = new Vec2();
         viewport.setFocusable(true);
         viewport.requestFocusInWindow();
         viewport.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     mCamera.setRightButtonDown(true);
+                    Mouse.setLockMode();
                     setCursor(getToolkit().createCustomCursor(new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "Blank cursor"));
-                    lastCursorPosition.x = e.getXOnScreen();
-                    lastCursorPosition.y = e.getYOnScreen();
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                mCamera.setRightButtonDown(false);
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                    try {
-                        Robot robot = new Robot();
-                        robot.mouseMove((int) lastCursorPosition.x, (int) lastCursorPosition.y);
-                    } catch (AWTException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                    mCamera.setRightButtonDown(false);
+                    setCursor(Cursor.getDefaultCursor());
+                    Mouse.setNormalMode();
+                    System.out.println("sadsa");
                 }
-
             }
         });
         super.setVisible(b);
