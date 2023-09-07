@@ -23,8 +23,6 @@ public class Frame extends JFrame {
         addWindowListener(getWindowAdapter());
         addKeyListener(getKeyListener());
 
-//        System.out.println("aaaa");
-
     }
 
     public void add(Component... components) {
@@ -94,12 +92,12 @@ public class Frame extends JFrame {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                mCamera.setPressedKey(e.getKeyCode());
+                mCamera.setPressedKey(e.getKeyCode(), true);
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
-                mCamera.setPressedKey(-1);
+                mCamera.setPressedKey(e.getKeyCode(), false);
             }
         };
     }

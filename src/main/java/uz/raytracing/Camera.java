@@ -11,6 +11,7 @@ import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Camera {
     private Mat4 mProjection = new Mat4(1.0f);
@@ -31,7 +32,7 @@ public class Camera {
     private final float mNearClip;
     private final float mFarClip;
     private boolean isRightButtonDown = false;
-    private int pressedKey = -1;
+    private final ConcurrentHashMap<Integer, Boolean> pressedKey = new ConcurrentHashMap<>();
 
 
     public Camera(float verticalFOV, float nearClip, float farClip) {
@@ -66,33 +67,33 @@ public class Camera {
 
         if (!isRightButtonDown)
             return false;
-
-        if(pressedKey == KeyEvent.VK_W){
+        System.setProperty("java.awt.fullscreenhidecursor","true");
+        if(pressedKey.getOrDefault(KeyEvent.VK_W, false)){
             mPosition.equal(mPosition.add(mForwardDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey == KeyEvent.VK_S) {
+        if(pressedKey.getOrDefault(KeyEvent.VK_S, false)) {
             mPosition.equal(mPosition.sub(mForwardDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey == KeyEvent.VK_A) {
+        if(pressedKey.getOrDefault(KeyEvent.VK_A, false)) {
             mPosition.equal(mPosition.sub(rightDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey == KeyEvent.VK_D) {
+        if(pressedKey.getOrDefault(KeyEvent.VK_D, false)) {
             mPosition.equal(mPosition.add(rightDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey == KeyEvent.VK_E) {
+        if(pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
             mPosition.equal(mPosition.sub(upDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey == KeyEvent.VK_Q) {
+        if(pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
             mPosition.equal(mPosition.add(upDirection.mul(speed * ts)));
             moved = true;
         }
@@ -157,10 +158,6 @@ public class Camera {
         return mPosition;
     }
 
-    public Vec2 getMousePosition() {
-        return mLastMousePosition;
-    }
-
     public Mat4 getProjection() {
         return mProjection;
     }
@@ -169,18 +166,12 @@ public class Camera {
         return mInverseProjection;
     }
 
-//    public void setMousePosition(int newX, int newY) {
-//        this.delta = new Vec2(newX - this.mLastMousePosition.x, newY - this.mLastMousePosition.y).mul( 0.02f);
-////        System.out.println("X: " + newX + " Y: " + newY);
-//        this.mLastMousePosition = new Vec2(newX, newY);
-//    }
-
     public void setRightButtonDown(boolean rightButtonDown) {
         isRightButtonDown = rightButtonDown;
     }
 
-    public void setPressedKey(int pressedKey) {
-        this.pressedKey = pressedKey;
+    public void setPressedKey(int pressedKey, boolean state) {
+        this.pressedKey.put(pressedKey, state);
     }
 
     public float getRotationSpeed() {
