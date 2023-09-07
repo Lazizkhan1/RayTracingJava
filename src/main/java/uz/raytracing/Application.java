@@ -9,7 +9,7 @@ import uz.raytracing.util.Timer;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import java.awt.BorderLayout;
+import java.awt.*;
 
 public class Application {
     private final Viewport mViewport;
@@ -40,6 +40,7 @@ public class Application {
                 mViewport.repaint();
             }
             render(timer);
+
         }
     }
 
@@ -47,7 +48,7 @@ public class Application {
         float ts = timer.getDeltaTime();
         mRenderer.onResize(mViewport.getWidth(), mViewport.getHeight());
         mCamera.onResize(mViewport.getWidth(), mViewport.getHeight());
-        mCamera.onUpdate(ts);
+        mCamera.onUpdate(Math.min(ts, 0.033f));
         mRenderer.render(mCamera);
         frameTime.setText(String.format("FrameTime: %.3fms", ts * 1000));
     }

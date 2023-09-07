@@ -49,10 +49,10 @@ public class Renderer implements IRenderer {
 
         float discriminant = b * b - 4.0f * a * c;
 
-        if (discriminant < 0.0f) return new Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        if (discriminant < 0.0f) return new Vec4(0.6f, 0.7f, 0.9f, 1.0f);
 
         float closestT = (float) (-b - Math.sqrt(discriminant)) / (2.0f * a);
-        float t1 = (float) (-b + Math.sqrt(discriminant)) / (2 * a);
+//        float t1 = (float) (-b + Math.sqrt(discriminant)) / (2 * a); currently unused
 
 
         Vec3 hitPoint = ray.origin.add(ray.direction.mul(closestT));

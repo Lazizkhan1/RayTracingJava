@@ -6,11 +6,7 @@ import uz.raytracing.util.glm.Vec2;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
-import java.awt.AWTException;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.Robot;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -26,6 +22,9 @@ public class Frame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(getWindowAdapter());
         addKeyListener(getKeyListener());
+
+//        System.out.println("aaaa");
+
     }
 
     public void add(Component... components) {
@@ -71,21 +70,6 @@ public class Frame extends JFrame {
 
             }
         });
-        viewport.addMouseMotionListener(new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (e.getModifiersEx() == 4096) {
-                    mCamera.setMousePosition(e.getXOnScreen(), e.getYOnScreen());
-                }
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-
-
-            }
-        });
-
         super.setVisible(b);
     }
 

@@ -25,8 +25,8 @@ public class Glm {
     }
 
     public static Quat angleAxis(float degAngle, Vec3 v) {
-        float s = (float) Math.sin(Math.toRadians(degAngle) * 0.5f);
-        return new Quat((float) Math.cos(Math.toRadians(degAngle) * 0.5f), v.x * s, v.y * s, v.z * s);
+        float s = (float) Math.sin(degAngle * 0.5f);
+        return new Quat((float) Math.cos(degAngle * 0.5f), v.x * s, v.y * s, v.z * s);
     }
 
     public static Quat cross(Quat q1, Quat q2) {
@@ -71,22 +71,22 @@ public class Glm {
         float det = a * l - b * k + c * j + d * i - e * h + f * g;
         det = 1.0f / det;
         return new Mat4(
-                (+m.m11 * l - m.m12 * k + m.m13 * j) * det,
+                ( m.m11 * l - m.m12 * k + m.m13 * j) * det,
                 (-m.m01 * l + m.m02 * k - m.m03 * j) * det,
-                (+m.m31 * f - m.m32 * e + m.m33 * d) * det,
+                ( m.m31 * f - m.m32 * e + m.m33 * d) * det,
                 (-m.m21 * f + m.m22 * e - m.m23 * d) * det,
                 (-m.m10 * l + m.m12 * i - m.m13 * h) * det,
-                (+m.m00 * l - m.m02 * i + m.m03 * h) * det,
+                ( m.m00 * l - m.m02 * i + m.m03 * h) * det,
                 (-m.m30 * f + m.m32 * c - m.m33 * b) * det,
-                (+m.m20 * f - m.m22 * c + m.m23 * b) * det,
-                (+m.m10 * k - m.m11 * i + m.m13 * g) * det,
+                ( m.m20 * f - m.m22 * c + m.m23 * b) * det,
+                ( m.m10 * k - m.m11 * i + m.m13 * g) * det,
                 (-m.m00 * k + m.m01 * i - m.m03 * g) * det,
-                (+m.m30 * e - m.m31 * c + m.m33 * a) * det,
+                ( m.m30 * e - m.m31 * c + m.m33 * a) * det,
                 (-m.m20 * e + m.m21 * c - m.m23 * a) * det,
                 (-m.m10 * j + m.m11 * h - m.m12 * g) * det,
-                (+m.m00 * j - m.m01 * h + m.m02 * g) * det,
+                ( m.m00 * j - m.m01 * h + m.m02 * g) * det,
                 (-m.m30 * d + m.m31 * b - m.m32 * a) * det,
-                (+m.m20 * d - m.m21 * b + m.m22 * a) * det);
+                ( m.m20 * d - m.m21 * b + m.m22 * a) * det);
     }
 
     public static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up) {

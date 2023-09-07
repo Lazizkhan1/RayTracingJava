@@ -21,23 +21,47 @@ public class Vec4 {
         this.w = t;
     }
 
-    public Vec4(int x, int y, int z, int w) {
-        this.x = (float) x;
-        this.y = (float) y;
-        this.z = (float) z;
-        this.w = (float) w;
+    public Vec4(Vec4 v) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+        this.w = v.w;
     }
 
     public Vec4(Vec3 vec3) {
         this(vec3, 0.0f);
     }
 
+    public Vec4 add(Vec4 v) {
+        return new Vec4(
+                this.x + v.x,
+                this.y + v.y,
+                this.z + v.z,
+                this.w + v.w);
+    }
+
     public Vec4 mul(float t) {
-        this.x *= t;
-        this.y *= t;
-        this.z *= t;
-        this.w *= t;
-        return this;
+        return new Vec4(
+                this.x * t,
+                this.y * t,
+                this.z * t,
+                this.w * t);
+    }
+
+    public Vec4 mul(Vec4 v) {
+        return new Vec4(
+                this.x * v.x,
+                this.y * v.y,
+                this.z * v.z,
+                this.w * v.w);
+    }
+
+    public Vec4 sub(Vec4 v) {
+        return new Vec4(
+                this.x - v.x,
+                this.y - v.y,
+                this.z - v.z,
+                this.w - v.w);
     }
 
     public Vec3 xyz() {
@@ -45,7 +69,8 @@ public class Vec4 {
     }
 
     public static Vec4 clamp(Vec4 vec4, float min, float max) {
-        return new Vec4(clamp_(vec4.x, min, max),
+        return new Vec4(
+                clamp_(vec4.x, min, max),
                 clamp_(vec4.y, min, max),
                 clamp_(vec4.z, min, max),
                 clamp_(vec4.w, min, max));

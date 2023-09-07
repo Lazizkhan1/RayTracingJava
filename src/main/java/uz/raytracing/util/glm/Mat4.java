@@ -37,10 +37,22 @@ public class Mat4 {
     }
 
     public Vec4 mul(Vec4 v) {
+//        return new Vec4(
+//                m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w,
+//                m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
+//                m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
+//                m30 * v.x + m31 * v.y + m32 * v.z + m33 * v.w);
         return new Vec4(
-                m00 * v.x + m01 * v.y + m02 * v.z + m03 * v.w,
-                m10 * v.x + m11 * v.y + m12 * v.z + m13 * v.w,
-                m20 * v.x + m21 * v.y + m22 * v.z + m23 * v.w,
-                m30 * v.x + m31 * v.y + m32 * v.z + m33 * v.w);
+                m00 * v.x + m10 * v.y + m20 * v.z + m30 * v.w,
+                m01 * v.x + m11 * v.y + m21 * v.z + m31 * v.w,
+                m02 * v.x + m12 * v.y + m22 * v.z + m32 * v.w,
+                m03 * v.x + m13 * v.y + m23 * v.z + m33 * v.w);
+        /*
+        (
+			m[0][0] * v[0] + m[1][0] * v[1] + m[2][0] * v[2] + m[3][0] * v[3],
+			m[0][1] * v[0] + m[1][1] * v[1] + m[2][1] * v[2] + m[3][1] * v[3],
+			m[0][2] * v[0] + m[1][2] * v[1] + m[2][2] * v[2] + m[3][2] * v[3],
+			m[0][3] * v[0] + m[1][3] * v[1] + m[2][3] * v[2] + m[3][3] * v[3])
+         */
     }
 }
