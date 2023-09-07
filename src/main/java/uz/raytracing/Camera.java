@@ -1,5 +1,6 @@
 package uz.raytracing;
 
+import uz.raytracing.util.Mouse;
 import uz.raytracing.util.glm.Glm;
 import uz.raytracing.util.glm.Mat4;
 import uz.raytracing.util.glm.Quat;
@@ -7,7 +8,6 @@ import uz.raytracing.util.glm.Vec2;
 import uz.raytracing.util.glm.Vec3;
 import uz.raytracing.util.glm.Vec4;
 
-import java.awt.MouseInfo;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +56,7 @@ public class Camera {
     }
 
     public boolean onUpdate(float ts) {
-        Vec2 mousePos = new Vec2(MouseInfo.getPointerInfo().getLocation());
+        Vec2 mousePos = Mouse.getPosition();
         Vec2 delta = mousePos.sub(mLastMousePosition).mul(0.002f);
         mLastMousePosition = mousePos.copy();
         boolean moved = false;
@@ -67,7 +67,6 @@ public class Camera {
 
         if (!isRightButtonDown)
             return false;
-        System.setProperty("java.awt.fullscreenhidecursor","true");
         if(pressedKey.getOrDefault(KeyEvent.VK_W, false)){
             mPosition.equal(mPosition.add(mForwardDirection.mul(speed * ts)));
             moved = true;

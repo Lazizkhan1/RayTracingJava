@@ -1,6 +1,6 @@
 package uz.raytracing.util.glm;
 
-import java.awt.*;
+import java.awt.Point;
 
 public class Vec2 {
     public float x;
@@ -33,10 +33,23 @@ public class Vec2 {
         return new Vec2(this.x - v.x, this.y - v.y);
     }
 
+    public Vec2 add(Vec2 v) {
+        return new Vec2(this.x + v.x, this.y + v.y);
+    }
+
     public Vec2 copy() {
         return new Vec2(x, y);
     }
 
+    public void equal(Vec2 v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
+    public void equal(Point p) {
+        this.x = p.x;
+        this.y = p.y;
+    }
 
     @Override
     public String toString() {
