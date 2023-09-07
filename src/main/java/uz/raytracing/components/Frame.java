@@ -64,7 +64,6 @@ public class Frame extends JFrame {
                     mCamera.setRightButtonDown(false);
                     setCursor(Cursor.getDefaultCursor());
                     Mouse.setNormalMode();
-                    System.out.println("sadsa");
                 }
             }
         });
