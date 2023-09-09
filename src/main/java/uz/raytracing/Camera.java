@@ -22,7 +22,8 @@ public class Camera {
     private final Vec3 mPosition;
     private Vec3 mForwardDirection;
 
-    private ArrayList<Vec3> mRayDirections;
+    //    private ArrayList<Vec3> mRayDirections;
+    private Vec3[] mRayDirections;
     private Vec2 mLastMousePosition = new Vec2();
 
     private int mViewportWidth;
@@ -41,7 +42,7 @@ public class Camera {
         this.mFarClip = farClip;
 
         mForwardDirection = new Vec3(0, 0, -1);
-        mPosition = new Vec3(0, 0, 10);
+        mPosition = new Vec3(0, 0, 1.5f);
     }
 
     public void onResize(int width, int height) {
@@ -67,32 +68,32 @@ public class Camera {
 
         if (!isRightButtonDown)
             return false;
-        if(pressedKey.getOrDefault(KeyEvent.VK_W, false)){
+        if (pressedKey.getOrDefault(KeyEvent.VK_W, false)) {
             mPosition.equal(mPosition.add(mForwardDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey.getOrDefault(KeyEvent.VK_S, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_S, false)) {
             mPosition.equal(mPosition.sub(mForwardDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey.getOrDefault(KeyEvent.VK_A, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_A, false)) {
             mPosition.equal(mPosition.sub(rightDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey.getOrDefault(KeyEvent.VK_D, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_D, false)) {
             mPosition.equal(mPosition.add(rightDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
             mPosition.equal(mPosition.sub(upDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if(pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
             mPosition.equal(mPosition.add(upDirection.mul(speed * ts)));
             moved = true;
         }
@@ -133,7 +134,7 @@ public class Camera {
     }
 
     private void recalculateRayDirections() {
-        mRayDirections = new ArrayList<>(Collections.nCopies(mViewportWidth * mViewportHeight, null));
+        mRayDirections = new Vec3[mViewportWidth * mViewportHeight];
 
         for (int y = 0; y < mViewportHeight; y++) {
             for (int x = 0; x < mViewportWidth; x++) {
@@ -143,13 +144,16 @@ public class Camera {
                 Vec4 target = mInverseProjection.mul(new Vec4(coord.x, coord.y, 1, 1));
 
                 Vec3 rayDirection = new Vec3(mInverseView.mul(new Vec4(Glm.normalize(new Vec3(target).div(target.w)), 0.0f)));
-                mRayDirections.set(x + y * mViewportWidth, rayDirection);
+                mRayDirections[x + y * mViewportWidth] = rayDirection;
             }
         }
     }
 
+    public void recalculateProjectionAndRayDirection() {
 
-    public ArrayList<Vec3> getRayDirections() {
+    }
+
+    public Vec3[] getRayDirections() {
         return mRayDirections;
     }
 

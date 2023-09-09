@@ -15,25 +15,28 @@ public class Renderer implements IRenderer {
 
     @Override
     public void onResize(int width, int height) {
-        if (mFinalImage == null || width != mFinalImage.getWidth() || height != mFinalImage.getHeight()) {
+        Image image = getmFinalImage();
+        if (image == null || width != image.getWidth() || height != image.getHeight()) {
             mFinalImage = new Image(width, height, BufferedImage.TYPE_INT_ARGB);
             mImageData = new int[width * height];
         }
     }
 
     @Override
-    public void render(Camera camera) {
+    public void render(Scene scene, Camera camera) {
         Ray ray = new Ray();
         ray.origin = camera.getPosition();
+
         for (int y = 0; y < mFinalImage.getHeight(); y++) {
             for (int x = 0; x < mFinalImage.getWidth(); x++) {
-                ray.direction = camera.getRayDirections().get(x + y * mFinalImage.getWidth());
+                ray.direction = camera.getRayDirections()[x + y * mFinalImage.getWidth()];
                 Vec4 color = traceRay(ray);
                 color = Vec4.clamp(color, 0.0f, 1.0f);
                 mImageData[x + y * mFinalImage.getWidth()] = convertARGB(color);
 
             }
         }
+//        System.out.println("INFO: " + camera.getRayDirections().size() + " : " + (mFinalImage.getWidth() * mFinalImage.getHeight()));
 
         mFinalImage.setData(mImageData);
     }
@@ -43,19 +46,22 @@ public class Renderer implements IRenderer {
 
         float radius = 0.5f;
 
+        Vec3 origin = ray.origin.sub(new Vec3(0f, 0, 0));
+
         float a = Glm.dot(ray.direction, ray.direction);
-        float b = 2.0f * Glm.dot(ray.origin, ray.direction);
-        float c = Glm.dot(ray.origin, ray.origin) - radius * radius;
+        float b = 2.0f * Glm.dot(origin, ray.direction);
+        float c = Glm.dot(origin, origin) - radius * radius;
 
         float discriminant = b * b - 4.0f * a * c;
 
-        if (discriminant < 0.0f) return new Vec4(0.6f, 0.7f, 0.9f, 1.0f);
+        if (discriminant < 0.0f)
+            return new Vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
         float closestT = (float) (-b - Math.sqrt(discriminant)) / (2.0f * a);
 //        float t1 = (float) (-b + Math.sqrt(discriminant)) / (2 * a); currently unused
 
-
-        Vec3 hitPoint = ray.origin.add(ray.direction.mul(closestT));
+        if (closestT < 0.0f) return new Vec4(0, 0, 0, 1);
+        Vec3 hitPoint = origin.add(ray.direction.mul(closestT));
         Vec3 normal = Glm.normalize(hitPoint);
 
         Vec3 lightDirection = Glm.normalize(new Vec3(-1, -1, -1));

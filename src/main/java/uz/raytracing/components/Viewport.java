@@ -8,6 +8,7 @@ public class Viewport extends JPanel {
 
     public void setImage(Image image) {
         this.image = image;
+        repaint();
     }
 
     @Override
