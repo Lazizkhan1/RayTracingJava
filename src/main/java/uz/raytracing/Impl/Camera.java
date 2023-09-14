@@ -1,48 +1,20 @@
-package uz.raytracing;
+package uz.raytracing.Impl;
 
+import uz.raytracing.AbstractCamera;
 import uz.raytracing.util.Mouse;
 import uz.raytracing.util.glm.Glm;
-import uz.raytracing.util.glm.Mat4;
 import uz.raytracing.util.glm.Quat;
 import uz.raytracing.util.glm.Vec2;
 import uz.raytracing.util.glm.Vec3;
 import uz.raytracing.util.glm.Vec4;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class Camera {
-    private Mat4 mProjection = new Mat4(1.0f);
-    private Mat4 mInverseProjection = new Mat4(1.0f);
-    private Mat4 mView = new Mat4(1.0f);
-    private Mat4 mInverseView = new Mat4(1.0f);
-
-    private final Vec3 mPosition;
-    private Vec3 mForwardDirection;
-
-    //    private ArrayList<Vec3> mRayDirections;
-    private Vec3[] mRayDirections;
-    private Vec2 mLastMousePosition = new Vec2();
-
-    private int mViewportWidth;
-    private int mViewportHeight;
-
-    private final float mVerticalFOV;
-    private final float mNearClip;
-    private final float mFarClip;
-    private boolean isRightButtonDown = false;
-    private final ConcurrentHashMap<Integer, Boolean> pressedKey = new ConcurrentHashMap<>();
+public class Camera extends AbstractCamera {
 
 
     public Camera(float verticalFOV, float nearClip, float farClip) {
-        this.mVerticalFOV = verticalFOV;
-        this.mNearClip = nearClip;
-        this.mFarClip = farClip;
-
-        mForwardDirection = new Vec3(0, 0, -1);
-        mPosition = new Vec3(0, 0, 1.5f);
+        super(verticalFOV, nearClip, farClip);
     }
 
     public void onResize(int width, int height) {
@@ -58,7 +30,7 @@ public class Camera {
 
     public boolean onUpdate(float ts) {
         Vec2 mousePos = Mouse.getPosition();
-        Vec2 delta = mousePos.sub(mLastMousePosition).mul(0.002f);
+        Vec2 delta = mousePos.sub(mLastMousePosition).mul(0.0015f);
         mLastMousePosition = mousePos.copy();
         boolean moved = false;
 
@@ -88,12 +60,12 @@ public class Camera {
             moved = true;
         }
 
-        if (pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
             mPosition.equal(mPosition.sub(upDirection.mul(speed * ts)));
             moved = true;
         }
 
-        if (pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
+        if (pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
             mPosition.equal(mPosition.add(upDirection.mul(speed * ts)));
             moved = true;
         }
@@ -119,7 +91,7 @@ public class Camera {
         return moved;
     }
 
-    private void recalculateProjection() {
+    protected void recalculateProjection() {
         mProjection = Glm.perspectiveFov(
                 (float) Math.toRadians(mVerticalFOV),
                 (float) mViewportWidth,
@@ -128,12 +100,12 @@ public class Camera {
         mInverseProjection = Glm.inverse(mProjection);
     }
 
-    private void recalculateView() {
+    protected void recalculateView() {
         mView = Glm.lookAt(mPosition, mPosition.add(mForwardDirection), new Vec3(0, 1, 0));
         mInverseView = Glm.inverse(mView);
     }
 
-    private void recalculateRayDirections() {
+    protected void recalculateRayDirections() {
         mRayDirections = new Vec3[mViewportWidth * mViewportHeight];
 
         for (int y = 0; y < mViewportHeight; y++) {
@@ -142,15 +114,9 @@ public class Camera {
                 coord = coord.mul(2.0f).sub(1.0f);
 
                 Vec4 target = mInverseProjection.mul(new Vec4(coord.x, coord.y, 1, 1));
-
-                Vec3 rayDirection = new Vec3(mInverseView.mul(new Vec4(Glm.normalize(new Vec3(target).div(target.w)), 0.0f)));
-                mRayDirections[x + y * mViewportWidth] = rayDirection;
+                mRayDirections[x + y * mViewportWidth] = mInverseView.mul(Glm.normalize(target.xyz().div(target.w)));
             }
         }
-    }
-
-    public void recalculateProjectionAndRayDirection() {
-
     }
 
     public Vec3[] getRayDirections() {
@@ -159,14 +125,6 @@ public class Camera {
 
     public Vec3 getPosition() {
         return mPosition;
-    }
-
-    public Mat4 getProjection() {
-        return mProjection;
-    }
-
-    public Mat4 getInverseProjection() {
-        return mInverseProjection;
     }
 
     public void setRightButtonDown(boolean rightButtonDown) {

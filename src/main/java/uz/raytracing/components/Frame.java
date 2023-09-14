@@ -1,6 +1,6 @@
 package uz.raytracing.components;
 
-import uz.raytracing.Camera;
+import uz.raytracing.Impl.Camera;
 import uz.raytracing.util.Mouse;
 import uz.raytracing.util.Property;
 
@@ -33,10 +33,6 @@ public class Frame extends JFrame {
 
     }
 
-    public void add(Component... components) {
-        for (Component comp : components)
-            add(comp);
-    }
 
     @Override
     public Component add(Component comp) {
@@ -45,6 +41,7 @@ public class Frame extends JFrame {
 
     @Override
     public void setVisible(boolean b) {
+//        Viewport viewport = (Viewport) getContentPane().getComponent(0);
         Viewport viewport = (Viewport) ((SplitPane) getContentPane().getComponent(0)).getComponent(0);
         viewport.setFocusable(true);
         viewport.requestFocusInWindow();

@@ -15,7 +15,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>uz.raytracing.Application</mainClass>
+                    <mainClass>uz.raytracing.Impl.Application</mainClass>
                 </configuration>
             </plugin>
         </plugins>
@@ -32,6 +32,11 @@
             <groupId>io.github.java-graphics</groupId>
             <artifactId>glm</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.2.1</version>
         </dependency>
     </dependencies>
 

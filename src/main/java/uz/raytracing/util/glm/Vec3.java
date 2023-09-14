@@ -25,6 +25,12 @@ public class Vec3 {
         this.z = v.z;
     }
 
+    public Vec3(Vec3 v) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+    }
+
     public Vec3(float x, float y, float z) {
         this.x = x;
         this.y = y;
@@ -60,7 +66,8 @@ public class Vec3 {
     }
 
     public Vec3 div(float t) {
-        return new Vec3(this.x / t, this.y / t, this.z / t);
+        t = 1.0f / t;
+        return new Vec3(this.x * t, this.y * t, this.z * t);
     }
 
     public float length_squared() {

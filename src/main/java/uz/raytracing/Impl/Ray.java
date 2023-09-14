@@ -1,4 +1,4 @@
-package uz.raytracing;
+package uz.raytracing.Impl;
 
 import uz.raytracing.util.glm.Vec3;
 

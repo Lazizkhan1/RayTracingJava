@@ -1,6 +1,7 @@
-package uz.raytracing;
+package uz.raytracing.Impl;
 
 
+import uz.raytracing.AbstractRenderer;
 import uz.raytracing.util.glm.Glm;
 import uz.raytracing.util.glm.Vec3;
 import uz.raytracing.components.Image;
@@ -8,12 +9,9 @@ import uz.raytracing.util.glm.Vec4;
 
 import java.awt.image.BufferedImage;
 
-public class Renderer implements IRenderer {
+public class Renderer extends AbstractRenderer {
 
-    private Image mFinalImage;
-    private int[] mImageData;
 
-    @Override
     public void onResize(int width, int height) {
         Image image = getmFinalImage();
         if (image == null || width != image.getWidth() || height != image.getHeight()) {
@@ -22,7 +20,7 @@ public class Renderer implements IRenderer {
         }
     }
 
-    @Override
+
     public void render(Scene scene, Camera camera) {
         Ray ray = new Ray();
         ray.origin = camera.getPosition();
@@ -30,32 +28,37 @@ public class Renderer implements IRenderer {
         for (int y = 0; y < mFinalImage.getHeight(); y++) {
             for (int x = 0; x < mFinalImage.getWidth(); x++) {
                 ray.direction = camera.getRayDirections()[x + y * mFinalImage.getWidth()];
-                Vec4 color = traceRay(ray);
+
+                Vec4 color = traceRay(scene, ray);
                 color = Vec4.clamp(color, 0.0f, 1.0f);
                 mImageData[x + y * mFinalImage.getWidth()] = convertARGB(color);
 
             }
+
         }
-//        System.out.println("INFO: " + camera.getRayDirections().size() + " : " + (mFinalImage.getWidth() * mFinalImage.getHeight()));
 
         mFinalImage.setData(mImageData);
     }
 
-    @Override
-    public Vec4 traceRay(Ray ray) {
+    public Vec4 traceRay(Scene scene, Ray ray) {
 
-        float radius = 0.5f;
+        if(scene.spheres.isEmpty())
+            return Vec4.zero;
 
-        Vec3 origin = ray.origin.sub(new Vec3(0f, 0, 0));
+        Sphere sphere = scene.spheres.get(0);
+//        sphere.radius = 0.5f;
+//        sphere.position = new Vec3(0.0f, 0.0f, 0.0f);
+//        sphere.albedo = new Vec3(0.0f, 1.0f, 0.0f);
 
+        Vec3 origin = ray.origin.sub(sphere.position);
         float a = Glm.dot(ray.direction, ray.direction);
         float b = 2.0f * Glm.dot(origin, ray.direction);
-        float c = Glm.dot(origin, origin) - radius * radius;
+        float c = Glm.dot(origin, origin) - sphere.radius * sphere.radius;
 
         float discriminant = b * b - 4.0f * a * c;
 
         if (discriminant < 0.0f)
-            return new Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+            return Vec4.zero;
 
         float closestT = (float) (-b - Math.sqrt(discriminant)) / (2.0f * a);
 //        float t1 = (float) (-b + Math.sqrt(discriminant)) / (2 * a); currently unused
@@ -68,7 +71,7 @@ public class Renderer implements IRenderer {
 
         float lightIntensity = Math.max(Glm.dot(normal, lightDirection.neg()), 0.0f);
 
-        Vec3 sphereColor = new Vec3(0.0f, 1.0f, 0.0f);
+        Vec3 sphereColor = new Vec3(sphere.albedo);
         sphereColor.equal(sphereColor.mul(lightIntensity));
         return new Vec4(sphereColor, 1.0f);
 
@@ -82,8 +85,5 @@ public class Renderer implements IRenderer {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
-    public Image getmFinalImage() {
-        return mFinalImage;
-    }
 
 }

@@ -5,6 +5,12 @@ public class Vec4 {
     public float y;
     public float z;
     public float w;
+    public Vec3 xyz;
+    public final static Vec4 zero;
+
+    static {
+        zero = new Vec4(0, 0, 0, 1);
+    }
 
 
     public Vec4(float x, float y, float z, float w) {
@@ -28,9 +34,6 @@ public class Vec4 {
         this.w = v.w;
     }
 
-    public Vec4(Vec3 vec3) {
-        this(vec3, 0.0f);
-    }
 
     public Vec4 add(Vec4 v) {
         return new Vec4(
@@ -79,5 +82,4 @@ public class Vec4 {
     public static float clamp_(float t, float min, float max) {
         return Math.max(Math.min(t, max), min);
     }
-
 }

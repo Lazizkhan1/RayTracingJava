@@ -38,8 +38,8 @@ public class Glm {
     }
 
     public static Vec3 normalize(Vec3 v) {
-        float length = v.length();
-        return new Vec3(v.x / length, v.y / length, v.z / length);
+        float length = 1.0f / v.length();
+        return new Vec3(v.x * length, v.y * length, v.z * length);
     }
 
     public static Mat4 perspectiveFov(float fov, float width, float height, float zNear, float zFar) {
@@ -125,7 +125,7 @@ public class Glm {
         res.m23 = 0f;
         res.m30 = -sX * eye.x - sY * eye.y - sZ * eye.z;
         res.m31 = -uX * eye.x - uY * eye.y - uZ * eye.z;
-        res.m32 = +fX * eye.x + fY * eye.y + fZ * eye.z;
+        res.m32 = fX * eye.x + fY * eye.y + fZ * eye.z;
         res.m33 = 1f;
         return res;
     }
