@@ -6,6 +6,7 @@ import uz.raytracing.util.glm.Vec3;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+
 public abstract class AbstractCamera {
 
     protected Mat4 mProjection = new Mat4(1.0f);
