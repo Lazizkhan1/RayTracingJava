@@ -2,23 +2,17 @@ package uz.raytracing.Impl;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
-import uz.raytracing.test.DragFloat;
-import uz.raytracing.test.DragFloat3;
+import uz.raytracing.components.*;
 import uz.raytracing.components.Frame;
 import uz.raytracing.components.Image;
 import uz.raytracing.components.Panel;
-import uz.raytracing.components.SplitPane;
-import uz.raytracing.components.Viewport;
+import uz.raytracing.test.DragFloat;
+import uz.raytracing.test.DragFloat3;
 import uz.raytracing.util.Timer;
 import uz.raytracing.util.glm.Vec3;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 
 public class Application {
     private final Viewport mViewport;
@@ -35,24 +29,36 @@ public class Application {
         mViewport = new Viewport();
         mRenderer = new Renderer();
         mScene = new Scene();
-        mScene.spheres.add(new Sphere(new Vec3(-1, 0, 0), 0.5f, new Vec3(0, 1, 1)));
+        mScene.spheres.add(new Sphere(new Vec3(-1.0f, 0.0f, 0.0f), 0.5f, new Vec3(0.0f, 1.0f, 1.0f)));
+        mScene.spheres.add(new Sphere(new Vec3(1.0f, 0.0f, -5.0f), 1.5f, new Vec3(0.2f, 0.3f, 1.0f)));
 
         dragFloat3s = new DragFloat3[mScene.spheres.size()];
         dragFloats = new DragFloat[mScene.spheres.size()];
 
         mCamera = new Camera(45.0f, 0.1f, 100.0f);
         mFrameRate = new JLabel("FrameRate: ");
-        dragFloat3s[0] = new DragFloat3("Position", mScene.spheres.get(0).position, 0.1f);
-        dragFloats[0] = new DragFloat("Radius", mScene.spheres.get(0).radius, 0.05f);
-
         Panel controlPanel = new Panel();
-        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
-        controlPanel.add(dragFloat3s[0]);
-        controlPanel.add(dragFloats[0]);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1;
+        gbc.gridx = 1;
+
+        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.PAGE_AXIS));
+
+        for(int i = 0; i < mScene.spheres.size(); i++) {
+            dragFloat3s[i] = new DragFloat3("Position", mScene.spheres.get(i).position, 0.1f);
+            dragFloats[i] = new DragFloat("Radius", mScene.spheres.get(i).radius, 0.05f);
+            controlPanel.add(dragFloat3s[i]);
+//            controlPanel.add(new ColorChooser("HSV", mScene.spheres.get(i).albedo)); // this will work in next commit
+            controlPanel.add(dragFloats[i]);
+            controlPanel.add(new JSeparator());
+        }
+
         Panel configPanel = new Panel();
         configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
         configPanel.add(mFrameRate);
-        JScrollPane control = new JScrollPane(controlPanel);
+        JScrollPane control = new JScrollPane();
+        control.setViewportView(controlPanel);
         JScrollPane config = new JScrollPane(configPanel);
 
         SplitPane controlPane = new SplitPane(JSplitPane.VERTICAL_SPLIT, control, config);

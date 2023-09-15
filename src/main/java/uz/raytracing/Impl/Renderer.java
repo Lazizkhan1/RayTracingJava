@@ -45,44 +45,65 @@ public class Renderer extends AbstractRenderer {
         if(scene.spheres.isEmpty())
             return Vec4.zero;
 
-        Sphere sphere = scene.spheres.get(0);
-//        sphere.radius = 0.5f;
-//        sphere.position = new Vec3(0.0f, 0.0f, 0.0f);
-//        sphere.albedo = new Vec3(0.0f, 1.0f, 0.0f);
+        Sphere closestSphere = null;
+        float hitDictance = Float.MAX_VALUE;
 
-        Vec3 origin = ray.origin.sub(sphere.position);
-        float a = Glm.dot(ray.direction, ray.direction);
-        float b = 2.0f * Glm.dot(origin, ray.direction);
-        float c = Glm.dot(origin, origin) - sphere.radius * sphere.radius;
+        for(Sphere sphere: scene.spheres)
+        {
+            Vec3 origin = ray.origin.sub(sphere.position);
 
-        float discriminant = b * b - 4.0f * a * c;
+            float a = Glm.dot(ray.direction, ray.direction);
+            float b = 2.0f * Glm.dot(origin, ray.direction);
+            float c = Glm.dot(origin, origin) - sphere.radius * sphere.radius;
 
-        if (discriminant < 0.0f)
+            float discriminant = b * b - 4.0f * a * c;
+
+            if (discriminant < 0.0f)
+                continue;
+
+    //        float t1 = (float) (-b + Math.sqrt(discriminant)) / (2 * a); //currently unused
+            float closestT = (float) (-b - Math.sqrt(discriminant)) / (2.0f * a);
+
+
+            if(closestT < hitDictance && closestT > 0.0f) {
+                hitDictance = closestT;
+                closestSphere = sphere;
+            }
+        }
+
+        if(closestSphere == null) {
             return Vec4.zero;
+        }
 
-        float closestT = (float) (-b - Math.sqrt(discriminant)) / (2.0f * a);
-//        float t1 = (float) (-b + Math.sqrt(discriminant)) / (2 * a); currently unused
+        Vec3 origin = ray.origin.sub(closestSphere.position);
 
-        if (closestT < 0.0f) return new Vec4(0, 0, 0, 1);
-        Vec3 hitPoint = origin.add(ray.direction.mul(closestT));
+        Vec3 hitPoint = origin.add(ray.direction.mul(hitDictance));
+
         Vec3 normal = Glm.normalize(hitPoint);
 
         Vec3 lightDirection = Glm.normalize(new Vec3(-1, -1, -1));
 
         float lightIntensity = Math.max(Glm.dot(normal, lightDirection.neg()), 0.0f);
 
-        Vec3 sphereColor = new Vec3(sphere.albedo);
+        Vec3 sphereColor = new Vec3(closestSphere.albedo);
         sphereColor.equal(sphereColor.mul(lightIntensity));
         return new Vec4(sphereColor, 1.0f);
 
     }
 
-    public int convertARGB(Vec4 color) {
+    public static int convertARGB(Vec4 color) {
         short r = (short) (color.x * 255.0f);
         short g = (short) (color.y * 255.0f);
         short b = (short) (color.z * 255.0f);
         short a = (short) (color.w * 255.0f);
         return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    public static int convertRGB(Vec3 color) {
+        short r = (short) (color.x * 255.0f);
+        short g = (short) (color.y * 255.0f);
+        short b = (short) (color.z * 255.0f);
+        return (r << 16) | (g << 8) | b;
     }
 
 
