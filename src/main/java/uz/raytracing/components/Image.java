@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 public class Image extends BufferedImage {
     public Image(int width, int height, int imageType) {
         super(width, height, imageType);
+        setAccelerationPriority(1.0f);
     }
 
 
