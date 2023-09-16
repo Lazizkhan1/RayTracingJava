@@ -2,23 +2,30 @@ package uz.raytracing.Impl;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
-import uz.raytracing.components.*;
+import uz.raytracing.components.ColorChooser;
+import uz.raytracing.components.DragFloat;
+import uz.raytracing.components.DragFloat3;
 import uz.raytracing.components.Frame;
 import uz.raytracing.components.Image;
 import uz.raytracing.components.Panel;
-import uz.raytracing.test.DragFloat;
-import uz.raytracing.test.DragFloat3;
+import uz.raytracing.components.SplitPane;
+import uz.raytracing.components.Viewport;
 import uz.raytracing.util.Timer;
 import uz.raytracing.util.glm.Vec3;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
 
 public class Application {
     private final Viewport mViewport;
     private final Renderer mRenderer;
-    private final Frame mMainFrame;
-    private final SplitPane mSplitPane;
     private final JLabel mFrameRate;
     private final Camera mCamera;
     private final Scene mScene;
@@ -49,11 +56,11 @@ public class Application {
             dragFloat3s[i] = new DragFloat3("Position", mScene.spheres.get(i).position, 0.1f);
             dragFloats[i] = new DragFloat("Radius", mScene.spheres.get(i).radius, 0.05f);
             controlPanel.add(dragFloat3s[i]);
-//            controlPanel.add(new ColorChooser("HSV", mScene.spheres.get(i).albedo)); // this will work in next commit
+            controlPanel.add(new ColorChooser(mScene.spheres.get(i).albedo));
             controlPanel.add(dragFloats[i]);
             controlPanel.add(new JSeparator());
         }
-
+        controlPanel.revalidate();
         Panel configPanel = new Panel();
         configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
         configPanel.add(mFrameRate);
@@ -61,10 +68,9 @@ public class Application {
         control.setViewportView(controlPanel);
         JScrollPane config = new JScrollPane(configPanel);
 
-        SplitPane controlPane = new SplitPane(JSplitPane.VERTICAL_SPLIT, control, config);
-        Panel panel = new Panel(controlPane);
-        mSplitPane = new SplitPane(mViewport, panel);
-        mMainFrame = new Frame("Ray Tracing", mCamera);
+        SplitPane controlPane = new SplitPane("SecondarySplitPane", JSplitPane.VERTICAL_SPLIT, control, config);
+        SplitPane mSplitPane = new SplitPane("PrimarySplitPane", JSplitPane.HORIZONTAL_SPLIT, mViewport, controlPane);
+        Frame mMainFrame = new Frame("Ray Tracing", mCamera);
         mMainFrame.add(mSplitPane);
         mMainFrame.setFocusable(true);
         mMainFrame.requestFocus();
