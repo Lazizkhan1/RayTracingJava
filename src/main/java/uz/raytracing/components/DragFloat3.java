@@ -1,10 +1,13 @@
 package uz.raytracing.components;
 
-import uz.raytracing.test.DragFloatRaw;
 import uz.raytracing.util.glm.Vec3;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 public class DragFloat3 extends JPanel{
     private final JLabel label;
