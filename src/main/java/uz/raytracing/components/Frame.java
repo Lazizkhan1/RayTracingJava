@@ -7,6 +7,7 @@ import uz.raytracing.util.Property;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 import java.awt.Component;
+
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
@@ -17,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+
 import java.util.HashMap;
 
 public class Frame extends JFrame {
@@ -41,7 +43,6 @@ public class Frame extends JFrame {
 
     @Override
     public void setVisible(boolean b) {
-//        Viewport viewport = (Viewport) getContentPane().getComponent(0);
         Viewport viewport = (Viewport) ((SplitPane) getContentPane().getComponent(0)).getComponent(0);
         viewport.setFocusable(true);
         viewport.requestFocusInWindow();
@@ -76,8 +77,11 @@ public class Frame extends JFrame {
                 propertiesTable.put("WindowHeight", getHeight() + "");
                 propertiesTable.put("WindowLocationX", getLocationOnScreen().x + "");
                 propertiesTable.put("WindowLocationY", getLocationOnScreen().y + "");
-                propertiesTable.put("DividerLocation", ((SplitPane) (((Frame) e.getSource()).getContentPane().getComponent(0))).getDividerLocation() + "");
-                Property.set(propertiesTable);                       //I know this is piece of shit, but I couldn't find other shorter way :/
+                SplitPane sp = (SplitPane) ((Frame) e.getSource()).getContentPane().getComponent(0);
+                SplitPane sp1 = (SplitPane) sp.getRightComponent();
+                propertiesTable.put(sp.getId(), sp.getDividerLocation() + "");
+                propertiesTable.put(sp1.getId(), sp1.getDividerLocation() + "");
+                Property.set(propertiesTable);
                 super.windowClosing(e);
             }
         };
