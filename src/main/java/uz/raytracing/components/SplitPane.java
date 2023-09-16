@@ -7,15 +7,18 @@ import java.awt.Component;
 
 
 public class SplitPane extends JSplitPane {
+    private final String mId;
 
-    public SplitPane(Component newLeftComponent, Component newRightComponent) {
-        super(HORIZONTAL_SPLIT, newLeftComponent, newRightComponent);
-    }
-
-    public SplitPane(int newOrientation, Component newLeftComponent, Component newRightComponent) {
+    public SplitPane(String id, int newOrientation, Component newLeftComponent, Component newRightComponent) {
         super(newOrientation, newLeftComponent, newRightComponent);
-        setDividerLocation(Property.get("DividerLocation"));
+        mId = id;
+        setDividerLocation(Property.get(id));
         setResizeWeight(1.0);
         setDividerSize(4);
     }
+
+    public String getId() {
+        return mId;
+    }
+
 }
