@@ -17,42 +17,36 @@ import java.awt.event.MouseListener;
 
 public class ColorChooser extends JButton {
 
-    private JColorChooser colorChooser;
-    private AbstractColorChooserPanel abs;
+    private final int width = 650;
+    private final int height = 250;
+    private final JColorChooser colorChooser;
 
-    private Vec3 t_value;
-
-    public ColorChooser(String mode, Vec3 value) {
+    public ColorChooser(Vec3 value) {
         super();
-        t_value = value;
         colorChooser = new JColorChooser(new Color(Renderer.convertRGB(value)));
+        colorChooser.setPreviewPanel(new JPanel());
         colorChooser.setChooserPanels(new AbstractColorChooserPanel[]{colorChooser.getChooserPanels()[1]});
-//        for(AbstractColorChooserPanel a: colorChooser.getChooserPanels()) {
-//            if (a.getDisplayName().equals(mode)) {
-//                abs = a;
-//                break;
-//            }
-//        }
-        colorChooser.getChooserPanels()[0].getColorSelectionModel().addChangeListener(e -> {
-            System.out.println("dasd");
-//            Color color = colorChooser.getColor();
-//            t_value.x = color.getRed()   / 255.0f;
-//            t_value.y = color.getGreen() / 255.0f;
-//            t_value.z = color.getBlue()  / 255.0f;
-//            setForeground(color);
-        });
 
+        colorChooser.getSelectionModel().addChangeListener(e -> {
+            Color color = colorChooser.getColor();
+            value.x = color.getRed() / 255.0f;
+            value.y = color.getGreen() / 255.0f;
+            value.z = color.getBlue() / 255.0f;
+            setBackground(color);
+        });
+        addActionListener(e -> {
+            JDialog dialog = new JDialog();
+            dialog.setSize(width, height);
+            dialog.add(colorChooser);
+            dialog.setLocation(
+                    MouseInfo.getPointerInfo().getLocation().x - width / 2,
+                    MouseInfo.getPointerInfo().getLocation().y - height / 2
+            );
+            dialog.setVisible(true);
+        });
+        setBackground(colorChooser.getColor());
+        setSize(100, 100);
+        setFocusable(false);
     }
 
-    @Override
-    public synchronized void addMouseListener(MouseListener l) {
-        super.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                JColorChooser.showDialog(colorChooser, "Color chooser", colorChooser.getColor());
-
-            }
-        });
-    }
 }
