@@ -1,5 +1,3 @@
-# Ray Tracing Java
-___
 ### Purpose
 A Ray tracing application based on [The Cherno's](https://github.com/TheCherno) [Ray tracing series](https://www.youtube.com/playlist?list=PLlrATfBNZ98edc5GshdBtREv5asFW3yXl). 
 The purpose of this project, I will learn more about using java performance in graphics programming and improving my math knowledge as well.
