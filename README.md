@@ -11,5 +11,14 @@ OpenJDK 20.0.2 used and support all operating systems.
 ___
 
 ### Build/Run
-1. Clone repository: `https://github.com/Lazizkhan1/RayTracingJava` or download latest [release](https://github.com/Lazizkhan1/RayTracingJava/releases).
-2. Run `src/main/java/uz/raytracing/Impl/Application.java`
+
+You have to installed JRE or JDK on your system. And java.exe must be defined in environment variables.
+
+#### Run release
+1. Download [release](https://github.com/Lazizkhan1/RayTracingJava/releases) file.
+2. Open cmd.exe in download downloaded folder and type  `java -jar RayTracingJava-X.X.jar`
+
+#### You can build yourself
+1. Clone repository: `https://github.com/Lazizkhan1/RayTracingJava`.
+2. Build application: Click "build" in right side `Gradle/RayTracingJava/Tasks/build/build`
+3. Run: Open project file explorer and run `RayTracingJava/build/libs/RayTracingJava-x.x.jar`
