@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group = 'io.github.lazizkhan1'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.github.lazizkhan1.raytracingjava.Impl.Application'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
+dependencies {
+    implementation 'com.formdev:flatlaf:3.2.1'
+}
