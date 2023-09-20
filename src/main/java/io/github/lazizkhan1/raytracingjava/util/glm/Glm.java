@@ -1,6 +1,7 @@
 package io.github.lazizkhan1.raytracingjava.util.glm;
 
 public class Glm {
+
     public static float dot(Vec3 a, Vec3 b) {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
@@ -10,7 +11,7 @@ public class Glm {
     }
 
     public static float length(Quat q) {
-        return (float) Math.sqrt(dot(q, q));
+        return (float) StrictMath.sqrt(dot(q, q));
     }
 
     public static Vec3 cross(Vec3 a, Vec3 b) {
@@ -20,13 +21,12 @@ public class Glm {
                 a.x * b.y - a.y * b.x);
     }
 
-    public static Vec3 rotate(Quat q, Vec3 v) {
-        return q.mul(v);
+    public static Vec3 reflect(Vec3 a, Vec3 b) {
+        return a.sub( b.mul(2.0f * dot(a, b)));
     }
 
-    public static Quat angleAxis(float degAngle, Vec3 v) {
-        float s = (float) Math.sin(degAngle * 0.5f);
-        return new Quat((float) Math.cos(degAngle * 0.5f), v.x * s, v.y * s, v.z * s);
+    public static Vec3 rotate(Quat q, Vec3 v) {
+        return q.mul(v);
     }
 
     public static Quat cross(Quat q1, Quat q2) {
@@ -40,6 +40,20 @@ public class Glm {
     public static Vec3 normalize(Vec3 v) {
         float length = 1.0f / v.length();
         return new Vec3(v.x * length, v.y * length, v.z * length);
+    }
+
+    public static Quat angleAxis(float degAngle, Vec3 v) {
+        float s = (float) Math.sin(degAngle * 0.5f);
+        return new Quat((float) Math.cos(degAngle * 0.5f), v.x * s, v.y * s, v.z * s);
+    }
+
+    public static Quat normalize(Quat q) {
+        float len = length(q);
+        if (len <= 0) { // Problem
+            return new Quat(1, 0, 0, 0);
+        }
+        float oneOverLen = 1 / len;
+        return new Quat(q.w * oneOverLen, q.x * oneOverLen, q.y * oneOverLen, q.z * oneOverLen);
     }
 
     public static Mat4 perspectiveFov(float fov, float width, float height, float zNear, float zFar) {
@@ -94,7 +108,7 @@ public class Glm {
         float fX = center.x - eye.x;
         float fY = center.y - eye.y;
         float fZ = center.z - eye.z;
-        float inverseSqrt = 1f / (float) Math.sqrt(fX * fX + fY * fY + fZ * fZ);
+        float inverseSqrt = 1f / (float) StrictMath.sqrt(fX * fX + fY * fY + fZ * fZ);
         fX *= inverseSqrt;
         fY *= inverseSqrt;
         fZ *= inverseSqrt;
@@ -102,7 +116,7 @@ public class Glm {
         float sX = fY * up.z - fZ * up.y;
         float sY = fZ * up.x - fX * up.z;
         float sZ = fX * up.y - fY * up.x;
-        inverseSqrt = 1.0f / (float) Math.sqrt(sX * sX + sY * sY + sZ * sZ);
+        inverseSqrt = 1.0f / (float) StrictMath.sqrt(sX * sX + sY * sY + sZ * sZ);
         sX *= inverseSqrt;
         sY *= inverseSqrt;
         sZ *= inverseSqrt;
@@ -128,15 +142,6 @@ public class Glm {
         res.m32 = fX * eye.x + fY * eye.y + fZ * eye.z;
         res.m33 = 1f;
         return res;
-    }
-
-    public static Quat normalize(Quat q) {
-        float len = length(q);
-        if (len <= 0) { // Problem
-            return new Quat(1, 0, 0, 0);
-        }
-        float oneOverLen = 1 / len;
-        return new Quat(q.w * oneOverLen, q.x * oneOverLen, q.y * oneOverLen, q.z * oneOverLen);
     }
 
 }
