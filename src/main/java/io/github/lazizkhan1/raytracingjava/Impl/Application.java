@@ -35,8 +35,8 @@ public class Application {
         mViewport = new Viewport();
         mRenderer = new Renderer();
         mScene = new Scene();
-        mScene.spheres.add(new Sphere(new Vec3(-1.0f, 0.0f, 0.0f), 0.5f, new Vec3(0.0f, 1.0f, 1.0f)));
-        mScene.spheres.add(new Sphere(new Vec3(1.0f, 0.0f, -5.0f), 1.5f, new Vec3(0.2f, 0.3f, 1.0f)));
+        mScene.spheres.add(new Sphere(new Vec3(0.0f, 0.0f, 0.0f), 0.5f, new Vec3(0.0f, 1.0f, 1.0f)));
+        mScene.spheres.add(new Sphere(new Vec3(0.0f, -9.0f, 0.0f), 8.5f, new Vec3(0.2f, 0.3f, 1.0f)));
 
         dragFloat3s = new DragFloat3[mScene.spheres.size()];
         dragFloats = new DragFloat[mScene.spheres.size()];
