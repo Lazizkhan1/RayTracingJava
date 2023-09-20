@@ -1,6 +1,5 @@
 package io.github.lazizkhan1.raytracingjava.util.glm;
 
-import static java.lang.Math.sqrt;
 
 public class Vec3 {
     public float x;
@@ -75,7 +74,8 @@ public class Vec3 {
     }
 
     public float length() {
-        return (float) sqrt(length_squared());
+        return (float)  StrictMath.sqrt(length_squared());
+
     }
 
     public void equal(Vec3 a) {
