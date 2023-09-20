@@ -11,6 +11,21 @@ import java.awt.image.BufferedImage;
 
 public class Renderer extends AbstractRenderer {
 
+    public static int convertARGB(Vec4 color) {
+        short r = (short) (color.x * 255.0f);
+        short g = (short) (color.y * 255.0f);
+        short b = (short) (color.z * 255.0f);
+        short a = (short) (color.w * 255.0f);
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    public static int convertRGB(Vec3 color) {
+        short r = (short) (color.x * 255.0f);
+        short g = (short) (color.y * 255.0f);
+        short b = (short) (color.z * 255.0f);
+        return (r << 16) | (g << 8) | b;
+    }
+
 
     public void onResize(int width, int height) {
         Image image = getmFinalImage();
@@ -22,34 +37,77 @@ public class Renderer extends AbstractRenderer {
 
 
     public void render(Scene scene, Camera camera) {
-        Ray ray = new Ray();
-        ray.origin = camera.getPosition();
+        mActiveScene = scene;
+        mActiveCamera = camera;
 
         for (int y = 0; y < mFinalImage.getHeight(); y++) {
             for (int x = 0; x < mFinalImage.getWidth(); x++) {
-                ray.direction = camera.getRayDirections()[x + y * mFinalImage.getWidth()];
-
-                Vec4 color = traceRay(scene, ray);
+                Vec4 color = perPixel(x, y);
                 color = Vec4.clamp(color, 0.0f, 1.0f);
                 mImageData[x + y * mFinalImage.getWidth()] = convertARGB(color);
-
             }
-
         }
-
         mFinalImage.setData(mImageData);
     }
 
-    public Vec4 traceRay(Scene scene, Ray ray) {
+    @Override
+    protected Vec4 perPixel(int x, int y) {
+        Ray ray = new Ray();
+        ray.origin = mActiveCamera.getPosition();
+        ray.direction = mActiveCamera.getRayDirections()[x + y * mFinalImage.getWidth()];
 
-        if(scene.spheres.isEmpty())
-            return Vec4.zero;
+        Vec3 color = new Vec3(0);
+        float multiplier = 1.0f;
+        int bounces = 2;
+        for (int i = 0; i < bounces; i++) {
+            HitPayload payload = traceRay(ray);
+            if(payload.hitDistance < 0.0f) {
+                Vec3 skyColor = new Vec3(0.0f, 0.0f, 0.0f);
+                color.add(skyColor.mul(multiplier));
+                break;
+            }
 
-        Sphere closestSphere = null;
+            Vec3 lightDirection = Glm.normalize(new Vec3(-1, -1, -1));
+            float lightIntensity = Math.max(Glm.dot(payload.wordlNormal, lightDirection.neg()), 0.0f);
+
+            final Sphere sphere = mActiveScene.spheres.get(payload.objectIndex);
+            Vec3 sphereColor = new Vec3(sphere.albedo);
+            ray.origin = payload.wordlPosition.mul(0.0001f);
+            sphereColor.equal(sphereColor.mul(lightIntensity));
+            color.equal(color.add(sphereColor.mul(multiplier)));
+            multiplier *= 0.7f;
+
+            ray.origin = payload.wordlPosition.add(payload.wordlNormal.mul(0.0001f));
+            ray.direction = Glm.reflect(ray.direction, payload.wordlNormal);
+        }
+        return new Vec4(color, 1.0f);
+    }
+
+    @Override
+    protected HitPayload closestHit(Ray ray, float hitDistance, int objectIndex) {
+        final Sphere closestSphere = mActiveScene.spheres.get(objectIndex);
+
+        HitPayload payload = new HitPayload();
+        payload.hitDistance = hitDistance;
+        payload.objectIndex = objectIndex;
+
+
+        Vec3 origin = ray.origin.sub(closestSphere.position);
+        payload.wordlPosition = origin.add(ray.direction.mul(hitDistance));
+        payload.wordlNormal = Glm.normalize(payload.wordlPosition);
+        payload.wordlPosition.equal(payload.wordlPosition.add(closestSphere.position));
+        return payload;
+    }
+
+    @Override
+    protected HitPayload traceRay(Ray ray) {
+
+        int closestSphere = -1;
         float hitDictance = Float.MAX_VALUE;
 
-        for(Sphere sphere: scene.spheres)
+        for(int i = 0; i < mActiveScene.spheres.size(); i++)
         {
+            Sphere sphere = mActiveScene.spheres.get(i);
             Vec3 origin = ray.origin.sub(sphere.position);
 
             float a = Glm.dot(ray.direction, ray.direction);
@@ -67,44 +125,23 @@ public class Renderer extends AbstractRenderer {
 
             if(closestT < hitDictance && closestT > 0.0f) {
                 hitDictance = closestT;
-                closestSphere = sphere;
+                closestSphere = i;
             }
         }
 
-        if(closestSphere == null) {
-            return Vec4.zero;
+        if(closestSphere < 0) {
+            return miss(ray);
         }
 
-        Vec3 origin = ray.origin.sub(closestSphere.position);
-
-        Vec3 hitPoint = origin.add(ray.direction.mul(hitDictance));
-
-        Vec3 normal = Glm.normalize(hitPoint);
-
-        Vec3 lightDirection = Glm.normalize(new Vec3(-1, -1, -1));
-
-        float lightIntensity = Math.max(Glm.dot(normal, lightDirection.neg()), 0.0f);
-
-        Vec3 sphereColor = new Vec3(closestSphere.albedo);
-        sphereColor.equal(sphereColor.mul(lightIntensity));
-        return new Vec4(sphereColor, 1.0f);
+        return closestHit(ray, hitDictance, closestSphere);
 
     }
 
-    public static int convertARGB(Vec4 color) {
-        short r = (short) (color.x * 255.0f);
-        short g = (short) (color.y * 255.0f);
-        short b = (short) (color.z * 255.0f);
-        short a = (short) (color.w * 255.0f);
-        return (a << 24) | (r << 16) | (g << 8) | b;
+    @Override
+    protected HitPayload miss(Ray ray) {
+        HitPayload payload = new HitPayload();
+        payload.hitDistance = -1.0f;
+        return payload;
     }
-
-    public static int convertRGB(Vec3 color) {
-        short r = (short) (color.x * 255.0f);
-        short g = (short) (color.y * 255.0f);
-        short b = (short) (color.z * 255.0f);
-        return (r << 16) | (g << 8) | b;
-    }
-
 
 }
