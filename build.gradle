@@ -1,9 +1,14 @@
 plugins {
     id 'java'
+    id 'application'
+}
+
+application {
+    mainClass = 'io.github.lazizkhan1.raytracingjava.Impl.Application'
 }
 
 group = 'io.github.lazizkhan1'
-version = '1.1-SNAPSHOT'
+version = '1.1'
 
 repositories {
     mavenCentral()
