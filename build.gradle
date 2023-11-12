@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = 'io.github.lazizkhan1.raytracingjava.Impl.Application'
+    mainClass = 'io.github.lazizkhan1.raytracingjava.Impl.RayTracing'
 }
 
 group = 'io.github.lazizkhan1'
@@ -16,7 +16,7 @@ repositories {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'io.github.lazizkhan1.raytracingjava.Impl.Application'
+        attributes 'Main-Class': 'io.github.lazizkhan1.raytracingjava.Impl.RayTracing'
     }
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it)}

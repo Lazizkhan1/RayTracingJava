@@ -14,7 +14,7 @@ public abstract class AbstractCamera {
     protected Mat4 mView = new Mat4(1.0f);
     protected Mat4 mInverseView = new Mat4(1.0f);
 
-    protected final Vec3 mPosition;
+    protected Vec3 mPosition;
     protected Vec3 mForwardDirection;
 
     protected Vec3[] mRayDirections;

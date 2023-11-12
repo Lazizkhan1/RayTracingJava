@@ -1,5 +1,5 @@
 ### Purpose
-A Ray tracing application based on [The Cherno's](https://github.com/TheCherno) [Ray tracing series](https://www.youtube.com/playlist?list=PLlrATfBNZ98edc5GshdBtREv5asFW3yXl).
+A Ray tracing rayTracing based on [The Cherno's](https://github.com/TheCherno) [Ray tracing series](https://www.youtube.com/playlist?list=PLlrATfBNZ98edc5GshdBtREv5asFW3yXl).
 The purpose of this project, I will learn more about using java performance in graphics programming and improving my math knowledge as well.
 ___
 
@@ -20,5 +20,5 @@ You have to installed JRE or JDK on your system. And java.exe must be defined in
 
 #### Build/run project
 1. Clone repository: `https://github.com/Lazizkhan1/RayTracingJava`.
-2. Build application: Click "build" in right side `Gradle/RayTracingJava/Tasks/build/build`
+2. Build rayTracing: Click "build" in right side `Gradle/RayTracingJava/Tasks/build/build`
 3. Run: Open project file explorer and run `RayTracingJava/build/libs/RayTracingJava-x.x.jar`
