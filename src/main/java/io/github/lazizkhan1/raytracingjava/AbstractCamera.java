@@ -35,7 +35,7 @@ public abstract class AbstractCamera {
         this.mFarClip = farClip;
 
         mForwardDirection = new Vec3(0, 0, -1);
-        mPosition = new Vec3(0, 0, 1.5f);
+        mPosition = new Vec3(0, 0, 6f);
     }
 
     abstract public void onResize(int width, int height);

@@ -11,10 +11,10 @@ import java.awt.event.MouseMotionAdapter;
 
 public class DragFloatRaw extends JPanel {
     private float value;
-    private JLabel text;
+    private final JLabel text;
     private float speed;
-    private float min;
-    private float max;
+    private final float min;
+    private final float max;
 
     private int lastX;
 
@@ -23,9 +23,9 @@ public class DragFloatRaw extends JPanel {
         this(value, speed, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    public DragFloatRaw(float in_value, float speed, float min, float max) {
-        this.max = max;
-        this.min = min;
+    public DragFloatRaw(float in_value, float speed, float inMin, float inMax) {
+        this.max = inMax;
+        this.min = inMin;
         this.value = in_value;
         this.speed = speed;
 

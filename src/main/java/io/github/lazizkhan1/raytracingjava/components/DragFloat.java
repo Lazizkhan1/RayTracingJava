@@ -8,18 +8,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 public class DragFloat extends JPanel {
-    private final JLabel label;
     private final DragFloatRaw drag;
-    private final GridBagConstraints gc;
-    private float value;
+    private final float value;
 
     public DragFloat(String inLabel, float in_value, float speed) {
         this.value = in_value;
-        label = new JLabel(inLabel);
+        JLabel label = new JLabel(inLabel);
         label.setForeground(Color.LIGHT_GRAY);
         drag = new DragFloatRaw(value, speed);
         setLayout(new GridBagLayout());
-        gc = new GridBagConstraints();
+        GridBagConstraints gc = new GridBagConstraints();
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.insets = new Insets(2, 2, 2, 2);
         gc.anchor = GridBagConstraints.NORTH;
@@ -28,6 +26,23 @@ public class DragFloat extends JPanel {
 
         add(drag, gc);
         add(label, gc);
+    }
+
+    public DragFloat(String label, float in_value, float speed, float min, float max) {
+        this.value = in_value;
+        JLabel text = new JLabel(label);
+        text.setForeground(Color.LIGHT_GRAY);
+        drag = new DragFloatRaw(value, speed, min, max);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.insets = new Insets(2, 2, 2, 2);
+        gc.anchor = GridBagConstraints.NORTH;
+        gc.weightx = 1;
+        gc.weighty = 1;
+
+        add(drag, gc);
+        add(text, gc);
     }
 
     public float update() {

@@ -30,11 +30,28 @@ public class RayTracing implements Layer {
         mViewport = new Viewport();
         mRenderer = new Renderer();
         mScene = new Scene();
-        mScene.spheres.add(new Sphere(new Vec3(0.0f, 0.0f, 0.0f), 0.5f, new Vec3(0.0f, 1.0f, 1.0f)));
-        mScene.spheres.add(new Sphere(new Vec3(0.0f, -9.0f, 0.0f), 8.5f, new Vec3(0.2f, 0.3f, 1.0f)));
+
+        Material materialPink = mScene.materials.set(new Material());
+        materialPink.albedo = new Vec3(1.0f, 0.0f, 1.0f);
+        materialPink.roughness = 0.0f;
+        materialPink.metallic = 0.0f;
+
+        Material materialBlue = mScene.materials.set(new Material());
+        materialBlue.albedo = new Vec3(0.2f, 0.3f, 1.0f);
+        materialBlue.roughness = 0.1f;
+        materialBlue.metallic = 0.0f;
+
+        mScene.spheres.add(new Sphere(
+                new Vec3(0.0f, 0.0f, 0.0f),
+                1f,0)
+        );
+        mScene.spheres.add(new Sphere(
+                new Vec3(0.0f, -101.0f, 0.0f),
+                100f,1)
+        );
 
         dragFloat3s = new DragFloat3[mScene.spheres.size()];
-        dragFloats = new DragFloat[mScene.spheres.size()];
+        dragFloats = new DragFloat[mScene.spheres.size() * 3];
 
         mCamera = new Camera(45.0f, 0.1f, 100.0f);
         mFrameRate = new JLabel("FrameRate: ");
@@ -44,12 +61,25 @@ public class RayTracing implements Layer {
 
         for (int i = 0; i < mScene.spheres.size(); i++) {
             dragFloat3s[i] = new DragFloat3("Position", mScene.spheres.get(i).position, 0.1f);
-            dragFloats[i] = new DragFloat("Radius", mScene.spheres.get(i).radius, 0.05f);
             controlPanel.add(dragFloat3s[i]);
-            controlPanel.add(new ColorChooser(mScene.spheres.get(i).albedo));
+
+            dragFloats[i] = new DragFloat("Radius", mScene.spheres.get(i).radius, 0.05f);
             controlPanel.add(dragFloats[i]);
+
             controlPanel.add(new JSeparator());
         }
+
+        for (int i = 0, j = mScene.spheres.size(); i < mScene.materials.size(); j += 2, i++) {
+            dragFloats[j] = new DragFloat("Roughness", mScene.materials.get(i).roughness, 0.005f, 0.0f, 1.0f);
+            controlPanel.add(dragFloats[j]);
+
+            dragFloats[j + 1] = new DragFloat("Metallic", mScene.materials.get(i).metallic, 0.005f, 0.0f, 1.0f);
+            controlPanel.add(dragFloats[j + 1]);
+
+            controlPanel.add(new ColorChooser(mScene.materials.get(i).albedo));
+            controlPanel.add(new JSeparator());
+        }
+
         controlPanel.revalidate();
         Panel configPanel = new Panel();
         configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
@@ -80,11 +110,14 @@ public class RayTracing implements Layer {
 
     @Override
     public void onUpdate(float ts) {
-        for (DragFloat3 drag : dragFloat3s) {
-            drag.update();
-        }
-        for (int i = 0; i < dragFloats.length; i++) {
+        for (int i = 0; i < mScene.spheres.size(); i++) {
             mScene.spheres.get(i).radius = dragFloats[i].update();
+            dragFloat3s[i].update();
+        }
+
+        for (int i = 0, j = mScene.spheres.size(); i < mScene.spheres.size(); j += 2, i++) {
+            mScene.materials.get(i).roughness = dragFloats[j].update();
+            mScene.materials.get(i).metallic = dragFloats[j + 1].update();
         }
 
         mCamera.onUpdate(ts);

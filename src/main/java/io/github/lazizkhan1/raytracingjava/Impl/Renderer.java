@@ -56,14 +56,14 @@ public class Renderer extends AbstractRenderer {
         ray.origin = mActiveCamera.getPosition();
         ray.direction = mActiveCamera.getRayDirections()[x + y * mFinalImage.getWidth()];
 
-        Vec3 color = new Vec3(0);
+        Vec3 color = new Vec3(0.0f);
         float multiplier = 1.0f;
-        int bounces = 2;
+        int bounces = 5;
         for (int i = 0; i < bounces; i++) {
             HitPayload payload = traceRay(ray);
             if(payload.hitDistance < 0.0f) {
-                Vec3 skyColor = new Vec3(0.0f, 0.0f, 0.0f);
-                color.add(skyColor.mul(multiplier));
+                Vec3 skyColor = new Vec3(0.6f, 0.7f, 0.9f);
+                color.equal(color.add(skyColor.mul(multiplier)));
                 break;
             }
 
@@ -71,14 +71,17 @@ public class Renderer extends AbstractRenderer {
             float lightIntensity = Math.max(Glm.dot(payload.wordlNormal, lightDirection.neg()), 0.0f);
 
             final Sphere sphere = mActiveScene.spheres.get(payload.objectIndex);
-            Vec3 sphereColor = new Vec3(sphere.albedo);
-            ray.origin = payload.wordlPosition.mul(0.0001f);
+            final Material material = mActiveScene.materials.get(sphere.materialIndex);
+            Vec3 sphereColor = new Vec3(material.albedo);
+
             sphereColor.equal(sphereColor.mul(lightIntensity));
             color.equal(color.add(sphereColor.mul(multiplier)));
-            multiplier *= 0.7f;
+            multiplier *= 0.5f;
 
             ray.origin = payload.wordlPosition.add(payload.wordlNormal.mul(0.0001f));
-            ray.direction = Glm.reflect(ray.direction, payload.wordlNormal);
+            ray.direction = Glm.reflect(ray.direction, payload.wordlNormal.add(
+                    RandomUtil.vec3(-0.5f, 0.5f).mul(material.roughness))
+            );
         }
         return new Vec4(color, 1.0f);
     }
