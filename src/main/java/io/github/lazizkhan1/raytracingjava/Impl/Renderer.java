@@ -49,9 +49,8 @@ public class Renderer extends AbstractRenderer {
             for (int i = 0; i < mAccumulationData.length; i++)
                 mAccumulationData[i] = new Vec4();
         }
-        boolean par = true;
 
-        if (par) {
+        if (mSettings.multiThreaded) {
             IntStream.range(0, mFinalImage.getHeight()) // Outer loop (rows)
                     .parallel() // Stream is now parallel
                     .forEach(y -> {

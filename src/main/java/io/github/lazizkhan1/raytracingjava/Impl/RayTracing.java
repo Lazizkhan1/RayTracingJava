@@ -45,7 +45,7 @@ public class RayTracing implements Layer {
         );
 
         dragFloat3s = new DragFloat3[mScene.spheres.size()];
-        dragFloats = new DragFloat[mScene.spheres.size() * 3];
+        dragFloats = new DragFloat[mScene.spheres.size() * 4];
 
         mCamera = new Camera(45.0f, 0.1f, 100.0f);
         mFrameRate = new JLabel("FrameRate: ");
@@ -70,6 +70,9 @@ public class RayTracing implements Layer {
             dragFloats[j + 1] = new DragFloat("Metallic", mScene.materials.get(i).metallic, 0.005f, 0.0f, 1.0f);
             controlPanel.add(dragFloats[j + 1]);
 
+            dragFloats[j + 2] = new DragFloat("Emission Power", mScene.materials.get(i).emissionPower, 0.005f, 0.0f, Float.MAX_VALUE);
+            controlPanel.add(dragFloats[j + 2]);
+
             controlPanel.add(new ColorChooser(mScene.materials.get(i).albedo));
             controlPanel.add(new JSeparator());
         }
@@ -81,9 +84,12 @@ public class RayTracing implements Layer {
         resetButton.addActionListener(e -> mRenderer.resetFrameIndex());
         resetButton.setFocusable(false);
         JCheckBox accumulate = new JCheckBox("Accumulate", mRenderer.getSettings().accumulate);
+        JCheckBox multiThreaded = new JCheckBox("Multi Threading", mRenderer.getSettings().multiThreaded);
+        multiThreaded.addActionListener(e -> mRenderer.getSettings().multiThreaded = multiThreaded.isSelected());
+        multiThreaded.setFocusable(false);
         accumulate.addActionListener(e -> mRenderer.getSettings().accumulate = accumulate.isSelected());
         accumulate.setFocusable(false);
-        configPanel.add(mFrameRate, resetButton, accumulate);
+        configPanel.add(mFrameRate, resetButton, accumulate, multiThreaded);
         JScrollPane control = new JScrollPane();
         control.setViewportView(controlPanel);
         JScrollPane config = new JScrollPane(configPanel);
@@ -118,6 +124,7 @@ public class RayTracing implements Layer {
         for (int i = 0, j = mScene.spheres.size(); i < mScene.spheres.size(); j += 2, i++) {
             mScene.materials.get(i).roughness = dragFloats[j].update();
             mScene.materials.get(i).metallic = dragFloats[j + 1].update();
+            mScene.materials.get(i).emissionPower = dragFloats[j + 2].update();
         }
 
         if (mCamera.onUpdate(ts))
