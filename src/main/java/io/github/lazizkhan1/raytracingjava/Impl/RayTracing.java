@@ -6,13 +6,7 @@ import io.github.lazizkhan1.raytracingjava.components.*;
 import io.github.lazizkhan1.raytracingjava.util.Timer;
 import io.github.lazizkhan1.raytracingjava.util.glm.Vec3;
 
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import java.awt.Toolkit;
 
 public class RayTracing implements Layer {
@@ -43,11 +37,11 @@ public class RayTracing implements Layer {
 
         mScene.spheres.add(new Sphere(
                 new Vec3(0.0f, 0.0f, 0.0f),
-                1f,0)
+                1f, 0)
         );
         mScene.spheres.add(new Sphere(
                 new Vec3(0.0f, -101.0f, 0.0f),
-                100f,1)
+                100f, 1)
         );
 
         dragFloat3s = new DragFloat3[mScene.spheres.size()];
@@ -83,7 +77,13 @@ public class RayTracing implements Layer {
         controlPanel.revalidate();
         Panel configPanel = new Panel();
         configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.Y_AXIS));
-        configPanel.add(mFrameRate);
+        JButton resetButton = new JButton("Reset");
+        resetButton.addActionListener(e -> mRenderer.resetFrameIndex());
+        resetButton.setFocusable(false);
+        JCheckBox accumulate = new JCheckBox("Accumulate", mRenderer.getSettings().accumulate);
+        accumulate.addActionListener(e -> mRenderer.getSettings().accumulate = accumulate.isSelected());
+        accumulate.setFocusable(false);
+        configPanel.add(mFrameRate, resetButton, accumulate);
         JScrollPane control = new JScrollPane();
         control.setViewportView(controlPanel);
         JScrollPane config = new JScrollPane(configPanel);
@@ -120,14 +120,15 @@ public class RayTracing implements Layer {
             mScene.materials.get(i).metallic = dragFloats[j + 1].update();
         }
 
-        mCamera.onUpdate(ts);
+        if (mCamera.onUpdate(ts))
+            mRenderer.resetFrameIndex();
     }
 
     @Override
     public void onUIRender() {
         mFrameRate.setText(String.format("FrameTime: %.3fms", m_LastRenderTime * 1000));
 
-        Image image = mRenderer.getmFinalImage();
+        Image image = mRenderer.getFinalImage();
 
         if (image != null) mViewport.setImage(image);
 
@@ -137,6 +138,7 @@ public class RayTracing implements Layer {
     public static void main(String[] args) throws UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(new FlatMacDarkLaf());
         Application app = new Application();
+        System.gc();
         app.pushLayer(new RayTracing());
         app.run();
     }

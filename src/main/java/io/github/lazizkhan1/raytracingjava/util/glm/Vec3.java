@@ -44,12 +44,24 @@ public class Vec3 {
         return new Vec3(this.x + a.x, this.y + a.y, this.z + a.z);
     }
 
+    public void addEqual(Vec3 a) {
+        this.x += a.x;
+        this.y += a.y;
+        this.z += a.z;
+    }
+
     public Vec3 add(float t) {
         return new Vec3(this.x + t, this.y + t, this.z + t);
     }
 
     public Vec3 sub(Vec3 a) {
         return new Vec3(this.x - a.x, this.y - a.y, this.z - a.z);
+    }
+
+    public void subEqual(Vec3 a) {
+        this.x -= a.x;
+        this.y -= a.y;
+        this.z -= a.z;
     }
 
     public Vec3 sub(float t) {
@@ -62,6 +74,12 @@ public class Vec3 {
 
     public Vec3 mul(float t) {
         return new Vec3(this.x * t, this.y * t, this.z * t);
+    }
+
+    public void mulEqual(float t) {
+        this.x *= t;
+        this.y *= t;
+        this.z *= t;
     }
 
     public Vec3 div(float t) {

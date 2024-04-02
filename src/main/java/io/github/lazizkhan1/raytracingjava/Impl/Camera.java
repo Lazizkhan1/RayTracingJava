@@ -10,6 +10,7 @@ import io.github.lazizkhan1.raytracingjava.util.glm.Vec3;
 import io.github.lazizkhan1.raytracingjava.util.glm.Vec4;
 
 import java.awt.event.KeyEvent;
+import java.util.stream.IntStream;
 
 public class Camera extends AbstractCamera {
 
@@ -39,35 +40,37 @@ public class Camera extends AbstractCamera {
         Vec3 rightDirection = Glm.cross(mForwardDirection, upDirection);
         float speed = 3f;
 
+        int pressedKeysCount = pressedKey.values().stream().mapToInt(aBoolean -> aBoolean ? 1 : 0).sum();
+
         if (!isRightButtonDown)
             return false;
         if (pressedKey.getOrDefault(KeyEvent.VK_W, false)) {
-            mPosition.equal(mPosition.add(mForwardDirection.mul(speed * ts)));
+            mPosition.addEqual(mForwardDirection.mul(speed * ts / pressedKeysCount));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_S, false)) {
-            mPosition.equal(mPosition.sub(mForwardDirection.mul(speed * ts)));
+            mPosition.subEqual(mForwardDirection.mul(speed * ts / pressedKeysCount));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_A, false)) {
-            mPosition.equal(mPosition.sub(rightDirection.mul(speed * ts)));
+            mPosition.subEqual(rightDirection.mul(speed * ts / pressedKeysCount));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_D, false)) {
-            mPosition.equal(mPosition.add(rightDirection.mul(speed * ts)));
+            mPosition.addEqual(rightDirection.mul(speed * ts / pressedKeysCount));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
-            mPosition.equal(mPosition.sub(upDirection.mul(speed * ts)));
+            mPosition.subEqual(upDirection.mul(speed * ts / pressedKeysCount));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
-            mPosition.equal(mPosition.add(upDirection.mul(speed * ts)));
+            mPosition.addEqual(upDirection.mul(speed * ts / pressedKeysCount));
             moved = true;
         }
 
@@ -109,15 +112,17 @@ public class Camera extends AbstractCamera {
     protected void recalculateRayDirections() {
         mRayDirections = new Vec3[mViewportWidth * mViewportHeight];
 
-        for (int y = 0; y < mViewportHeight; y++) {
-            for (int x = 0; x < mViewportWidth; x++) {
-                Vec2 coord = new Vec2((float) x / (float) mViewportWidth, (float) y / (float) mViewportHeight);
-                coord = coord.mul(2.0f).sub(1.0f);
+        IntStream.range(0, mViewportHeight)
+                .parallel()
+                .forEach(y -> IntStream.range(0, mViewportWidth)
+                        .forEach(x -> {
+                            Vec2 coord = new Vec2((float) x / (float) mViewportWidth, (float) y / (float) mViewportHeight);
+                            coord = coord.mul(2.0f).sub(1.0f);
 
-                Vec4 target = mInverseProjection.mul(new Vec4(coord.x, coord.y, 1, 1));
-                mRayDirections[x + y * mViewportWidth] = mInverseView.mul(Glm.normalize(target.xyz().div(target.w)));
-            }
-        }
+                            Vec4 target = mInverseProjection.mul(new Vec4(coord.x, coord.y, 1, 1));
+                            mRayDirections[x + y * mViewportWidth] = mInverseView.mul(Glm.normalize(target.xyz().div(target.w)));
+                        })
+                );
     }
 
     public Vec3[] getRayDirections() {

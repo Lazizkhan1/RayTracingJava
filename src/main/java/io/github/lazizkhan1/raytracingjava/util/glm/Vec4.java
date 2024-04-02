@@ -5,13 +5,13 @@ public class Vec4 {
     public float y;
     public float z;
     public float w;
-    public Vec3 xyz;
-    public final static Vec4 zero;
 
-    static {
-        zero = new Vec4(0, 0, 0, 1);
+    public Vec4() {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.w = 0;
     }
-
 
     public Vec4(float x, float y, float z, float w) {
         this.x = x;
@@ -51,6 +51,14 @@ public class Vec4 {
                 this.w * t);
     }
 
+    public Vec4 div(float t) {
+        return new Vec4(
+                this.x / t,
+                this.y / t,
+                this.z / t,
+                this.w / t);
+    }
+
     public Vec4 mul(Vec4 v) {
         return new Vec4(
                 this.x * v.x,
@@ -67,6 +75,20 @@ public class Vec4 {
                 this.w - v.w);
     }
 
+    public void addEqual(Vec4 v) {
+        this.x += v.x;
+        this.y += v.y;
+        this.z += v.z;
+        this.w += v.w;
+    }
+
+    public void equal(Vec4 v) {
+        this.x = v.x;
+        this.y = v.y;
+        this.z = v.z;
+        this.w = v.w;
+    }
+
     public Vec3 xyz() {
         return new Vec3(this.x, this.y, this.z);
     }
@@ -81,5 +103,15 @@ public class Vec4 {
 
     public static float clamp_(float t, float min, float max) {
         return Math.max(Math.min(t, max), min);
+    }
+
+    @Override
+    public String toString() {
+        return "Vec4{" +
+                "x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", w=" + w +
+                '}';
     }
 }
