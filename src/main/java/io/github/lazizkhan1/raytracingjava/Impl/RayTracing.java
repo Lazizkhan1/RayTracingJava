@@ -35,10 +35,22 @@ public class RayTracing implements Layer {
         materialBlue.roughness = 0.1f;
         materialBlue.metallic = 0.0f;
 
+        Material materialOrange = mScene.materials.set(new Material());
+        materialOrange.albedo = new Vec3(0.8f, 0.5f, 0.2f);
+        materialOrange.roughness = 0.1f;
+        materialOrange.metallic = 0.0f;
+        materialOrange.emissionColor = materialOrange.albedo;
+        materialOrange.emissionPower = 2.0f;
+
         mScene.spheres.add(new Sphere(
                 new Vec3(0.0f, 0.0f, 0.0f),
                 1f, 0)
         );
+        mScene.spheres.add(new Sphere(
+                new Vec3(2.0f, 0.0f, 0.0f),
+                1, 2)
+        );
+
         mScene.spheres.add(new Sphere(
                 new Vec3(0.0f, -101.0f, 0.0f),
                 100f, 1)
@@ -73,7 +85,10 @@ public class RayTracing implements Layer {
             dragFloats[j + 2] = new DragFloat("Emission Power", mScene.materials.get(i).emissionPower, 0.005f, 0.0f, Float.MAX_VALUE);
             controlPanel.add(dragFloats[j + 2]);
 
+            controlPanel.add(new JLabel("Albedo"));
             controlPanel.add(new ColorChooser(mScene.materials.get(i).albedo));
+            controlPanel.add(new JLabel("Emission"));
+            controlPanel.add(new ColorChooser(mScene.materials.get(i).emissionColor));
             controlPanel.add(new JSeparator());
         }
 

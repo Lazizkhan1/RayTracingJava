@@ -3,6 +3,7 @@ package io.github.lazizkhan1.raytracingjava.Impl;
 
 import io.github.lazizkhan1.raytracingjava.AbstractRenderer;
 import io.github.lazizkhan1.raytracingjava.components.Image;
+import io.github.lazizkhan1.raytracingjava.util.RandomUtil;
 import io.github.lazizkhan1.raytracingjava.util.glm.Glm;
 import io.github.lazizkhan1.raytracingjava.util.glm.Vec3;
 import io.github.lazizkhan1.raytracingjava.util.glm.Vec4;
@@ -93,34 +94,35 @@ public class Renderer extends AbstractRenderer {
         ray.origin = mActiveCamera.getPosition();
         ray.direction = mActiveCamera.getRayDirections()[x + y * mFinalImage.getWidth()];
 
-        Vec3 color = new Vec3(0.0f);
-        float multiplier = 1.0f;
+        Vec3 light = new Vec3(0.0f);
+        Vec3 contribution = new Vec3(1.0f);
         int bounces = 5;
+
+        long[] seed = new long[]{x + (long) y * mFinalImage.getWidth()};
+        seed[0] *= mFrameIndex;
+
         for (int i = 0; i < bounces; i++) {
+            seed[0] += i;
             HitPayload payload = traceRay(ray);
             if (payload.hitDistance < 0.0f) {
                 Vec3 skyColor = new Vec3(0.6f, 0.7f, 0.9f);
-                color.addEqual(skyColor.mul(multiplier));
+                light.addEqual(skyColor.mul(contribution));
                 break;
             }
 
-            Vec3 lightDirection = Glm.normalize(new Vec3(-1, -1, -1));
-            float lightIntensity = Math.max(Glm.dot(payload.worldNormal, lightDirection.neg()), 0.0f);
-
             final Sphere sphere = mActiveScene.spheres.get(payload.objectIndex);
             final Material material = mActiveScene.materials.get(sphere.materialIndex);
-            Vec3 sphereColor = new Vec3(material.albedo);
+//            light.addEqual(material.albedo.mul(contribution));
 
-            sphereColor.mulEqual(lightIntensity);
-            color.addEqual(sphereColor.mul(multiplier));
-            multiplier *= 0.5f;
-
+            contribution.mulEqual(material.albedo);
+            light.addEqual(material.getEmission());
             ray.origin = payload.worldPosition.add(payload.worldNormal.mul(0.0001f));
-            ray.direction = Glm.reflect(ray.direction, payload.worldNormal.add(
-                    RandomUtil.vec3(-0.5f, 0.5f).mul(material.roughness))
-            );
+//            ray.direction = Glm.reflect(ray.direction, payload.worldNormal.add(
+//                    RandomUtil.vec3(-0.5f, 0.5f).mul(material.roughness))
+//            );
+            ray.direction = Glm.normalize(payload.worldNormal.add(RandomUtil.inUnitSphere()));
         }
-        return new Vec4(color, 1.0f);
+        return new Vec4(light, 1.0f);
     }
 
     @Override

@@ -82,6 +82,12 @@ public class Vec3 {
         this.z *= t;
     }
 
+    public void mulEqual(Vec3 t) {
+        this.x *= t.x;
+        this.y *= t.y;
+        this.z *= t.z;
+    }
+
     public Vec3 div(float t) {
         t = 1.0f / t;
         return new Vec3(this.x * t, this.y * t, this.z * t);
