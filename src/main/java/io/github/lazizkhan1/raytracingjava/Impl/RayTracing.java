@@ -104,7 +104,10 @@ public class RayTracing implements Layer {
         multiThreaded.setFocusable(false);
         accumulate.addActionListener(e -> mRenderer.getSettings().accumulate = accumulate.isSelected());
         accumulate.setFocusable(false);
-        configPanel.add(mFrameRate, resetButton, accumulate, multiThreaded);
+        JButton exportImage = new JButton("Export Image");
+        exportImage.addActionListener(e -> mViewport.exportImage());
+        exportImage.setFocusable(false);
+        configPanel.add(mFrameRate, resetButton, accumulate, multiThreaded, exportImage);
         JScrollPane control = new JScrollPane();
         control.setViewportView(controlPanel);
         JScrollPane config = new JScrollPane(configPanel);
