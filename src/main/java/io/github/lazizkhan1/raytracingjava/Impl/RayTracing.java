@@ -25,36 +25,77 @@ public class RayTracing implements Layer {
         mRenderer = new Renderer();
         mScene = new Scene();
 
-        Material materialPink = mScene.materials.set(new Material());
-        materialPink.albedo = new Vec3(1.0f, 0.0f, 1.0f);
-        materialPink.roughness = 0.0f;
-        materialPink.metallic = 0.0f;
-
-        Material materialBlue = mScene.materials.set(new Material());
-        materialBlue.albedo = new Vec3(0.2f, 0.3f, 1.0f);
-        materialBlue.roughness = 0.1f;
-        materialBlue.metallic = 0.0f;
-
-        Material materialOrange = mScene.materials.set(new Material());
-        materialOrange.albedo = new Vec3(0.8f, 0.5f, 0.2f);
-        materialOrange.roughness = 0.1f;
-        materialOrange.metallic = 0.0f;
-        materialOrange.emissionColor = materialOrange.albedo;
-        materialOrange.emissionPower = 2.0f;
-
+//        Material materialGreen = mScene.materials.set(new Material());
+//        materialGreen.albedo = new Vec3(0.0f, 1.0f, 0.0f);
+//        materialGreen.roughness = 0.0f;
+//        materialGreen.metallic = 0.0f;
+//
+//        Material materialRed = mScene.materials.set(new Material());
+//        materialRed.albedo = new Vec3(1.0f, 0.0f, 0.0f);
+//        materialRed.roughness = 0.0f;
+//        materialRed.metallic = 0.0f;
+//
+//        Material materialWhite = mScene.materials.set(new Material());
+//        materialWhite.albedo = new Vec3(1.0f, 1.0f, 1.0f);
+//        materialWhite.roughness = 0.0f;
+//        materialWhite.metallic = 0.0f;
+//
+//        Material materialWhite2 = mScene.materials.set(new Material());
+//        materialWhite2.albedo = new Vec3(1.0f, 1.0f, 1.0f);
+//        materialWhite2.roughness = 0.0f;
+//        materialWhite2.metallic = 0.0f;
+//
+//        Material materialLight = mScene.materials.set(new Material());
+//        materialLight.albedo = new Vec3(1.0f, 1.0f, 1.0f);
+//        materialLight.emissionColor = new Vec3(1.0f, 1.0f, 1.0f);
+//        materialLight.emissionPower = 0.0f;
+//
+        Material mirror = mScene.materials.set(new Material());
+        mirror.albedo = new Vec3(1.0f, 1.0f, 1.0f);
+        mirror.emissionColor = new Vec3(1.0f, 1.0f, 1.0f);
+        mirror.metallic = 1.0f;
+        mirror.roughness = 1.0f;
+        mirror.emissionPower = 0f;
+//
+//        Material top = mScene.materials.set(new Material());
+//        top.albedo = new Vec3(1.0f, 1.0f, 1.0f);
+//        top.roughness = 0.0f;
+//        top.metallic = 0.0f;
+//
+//
+//
         mScene.spheres.add(new Sphere(
                 new Vec3(0.0f, 0.0f, 0.0f),
                 1f, 0)
         );
-        mScene.spheres.add(new Sphere(
-                new Vec3(2.0f, 0.0f, 0.0f),
-                1, 2)
-        );
-
-        mScene.spheres.add(new Sphere(
-                new Vec3(0.0f, -101.0f, 0.0f),
-                100f, 1)
-        );
+//        mScene.spheres.add(new Sphere(
+//                new Vec3(2.0f, -31.0f, 0.0f),
+//                30f, 2)
+//        );
+//
+//        mScene.spheres.add(new Sphere(
+//                new Vec3(31.5f, 0.0f, 0.0f),
+//                30f, 0)
+//        );
+//        mScene.spheres.add(new Sphere(
+//                new Vec3(0.0f, 0.0f, -34.0f),
+//                30f, 3)
+//        );
+//
+//        mScene.spheres.add(new Sphere(
+//                new Vec3(0.0f, 5.2f, 1.3f),
+//                1.9f, 4)
+//        );
+//
+//        mScene.spheres.add(new Sphere(
+//                new Vec3(0.0f, 0.0f, 0.0f),
+//                1f, 5)
+//        );
+//
+//        mScene.spheres.add(new Sphere(
+//                new Vec3(0.0f, 1.0f, 0.0f),
+//                1f, 6)
+//        );
 
         dragFloat3s = new DragFloat3[mScene.spheres.size()];
         dragFloats = new DragFloat[mScene.spheres.size() * 4];
@@ -75,7 +116,7 @@ public class RayTracing implements Layer {
             controlPanel.add(new JSeparator());
         }
 
-        for (int i = 0, j = mScene.spheres.size(); i < mScene.materials.size(); j += 2, i++) {
+        for (int i = 0, j = mScene.materials.size(); i < mScene.materials.size(); j += 2, i++) {
             dragFloats[j] = new DragFloat("Roughness", mScene.materials.get(i).roughness, 0.005f, 0.0f, 1.0f);
             controlPanel.add(dragFloats[j]);
 
@@ -111,7 +152,10 @@ public class RayTracing implements Layer {
         JScrollPane control = new JScrollPane();
         control.setViewportView(controlPanel);
         JScrollPane config = new JScrollPane(configPanel);
-
+        control.setWheelScrollingEnabled(true);
+        config.setWheelScrollingEnabled(true);
+        control.getVerticalScrollBar().setUnitIncrement(16);
+        config.getVerticalScrollBar().setUnitIncrement(16);
         SplitPane controlPane = new SplitPane("SecondarySplitPane", JSplitPane.VERTICAL_SPLIT, control, config);
         SplitPane mSplitPane = new SplitPane("PrimarySplitPane", JSplitPane.HORIZONTAL_SPLIT, mViewport, controlPane);
         Frame mMainFrame = new Frame("Ray Tracing", mCamera);
@@ -139,7 +183,7 @@ public class RayTracing implements Layer {
             dragFloat3s[i].update();
         }
 
-        for (int i = 0, j = mScene.spheres.size(); i < mScene.spheres.size(); j += 2, i++) {
+        for (int i = 0, j = mScene.materials.size(); i < mScene.materials.size(); j += 2, i++) {
             mScene.materials.get(i).roughness = dragFloats[j].update();
             mScene.materials.get(i).metallic = dragFloats[j + 1].update();
             mScene.materials.get(i).emissionPower = dragFloats[j + 2].update();

@@ -28,6 +28,13 @@ public class Renderer extends AbstractRenderer {
         return (r << 16) | (g << 8) | b;
     }
 
+    public static Vec3 convertARGB(int color) {
+        short r = (short) ((color >> 16) & 0xFF);
+        short g = (short) ((color >> 8) & 0xFF);
+        short b = (short) (color & 0xFF);
+        return new Vec3(r / 255.0f, g / 255.0f, b / 255.0f);
+    }
+
 
     public void onResize(int width, int height) {
         Image image = getFinalImage();
@@ -54,17 +61,15 @@ public class Renderer extends AbstractRenderer {
         if (mSettings.multiThreaded) {
             IntStream.range(0, mFinalImage.getHeight()) // Outer loop (rows)
                     .parallel() // Stream is now parallel
-                    .forEach(y -> {
-                        IntStream.range(0, mFinalImage.getWidth()) // Inner loop (columns)
-                                .forEach(x -> {
-                                    Vec4 color = perPixel(x, y);
-                                    mAccumulationData[x + y * mFinalImage.getWidth()].addEqual(color);
-                                    Vec4 accumulatedColor = mAccumulationData[x + y * mFinalImage.getWidth()];
-                                    Vec4 divided = accumulatedColor.mul(1.0f / mFrameIndex);
-                                    accumulatedColor = Vec4.clamp(divided, 0.0f, 1.0f);
-                                    mImageData[x + y * mFinalImage.getWidth()] = convertARGB(accumulatedColor);
-                                });
-                    });
+                    .forEach(y -> IntStream.range(0, mFinalImage.getWidth()) // Inner loop (columns)
+                            .forEach(x -> {
+                                Vec4 color = perPixel(x, y);
+                                mAccumulationData[x + y * mFinalImage.getWidth()].addEqual(color);
+                                Vec4 accumulatedColor = mAccumulationData[x + y * mFinalImage.getWidth()];
+                                Vec4 divided = accumulatedColor.mul(1.0f / mFrameIndex);
+                                accumulatedColor = Vec4.clamp(divided, 0.0f, 1.0f);
+                                mImageData[x + y * mFinalImage.getWidth()] = convertARGB(accumulatedColor);
+                            }));
         }
         else {
             for (int y = 0; y < mFinalImage.getHeight(); y++) {
@@ -105,7 +110,7 @@ public class Renderer extends AbstractRenderer {
             seed[0] += i;
             HitPayload payload = traceRay(ray);
             if (payload.hitDistance < 0.0f) {
-                Vec3 skyColor = new Vec3(0.6f, 0.7f, 0.9f);
+                Vec3 skyColor = mActiveScene.skybox.getSkyColor(ray.direction);
                 light.addEqual(skyColor.mul(contribution));
                 break;
             }
@@ -117,10 +122,11 @@ public class Renderer extends AbstractRenderer {
             contribution.mulEqual(material.albedo);
             light.addEqual(material.getEmission());
             ray.origin = payload.worldPosition.add(payload.worldNormal.mul(0.0001f));
-//            ray.direction = Glm.reflect(ray.direction, payload.worldNormal.add(
-//                    RandomUtil.vec3(-0.5f, 0.5f).mul(material.roughness))
-//            );
-            ray.direction = Glm.normalize(payload.worldNormal.add(RandomUtil.inUnitSphere()));
+            Vec3 specularDir = Glm.reflect(ray.direction, payload.worldNormal.add(
+                    RandomUtil.vec3(-0.5f, 0.5f).mul(material.roughness))
+            );
+            Vec3 diffuseDir = Glm.normalize(payload.worldNormal.add(RandomUtil.inUnitSphere()));
+            ray.direction = Glm.mix(specularDir, diffuseDir, material.metallic);
         }
         return new Vec4(light, 1.0f);
     }
