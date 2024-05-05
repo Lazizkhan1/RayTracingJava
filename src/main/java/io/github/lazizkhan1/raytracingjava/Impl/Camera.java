@@ -41,36 +41,37 @@ public class Camera extends AbstractCamera {
         float speed = 3f;
 
         int pressedKeysCount = pressedKey.values().stream().mapToInt(aBoolean -> aBoolean ? 1 : 0).sum();
+        float calculatedSpeed = speed * ts / pressedKeysCount;
 
         if (!isRightButtonDown)
             return false;
         if (pressedKey.getOrDefault(KeyEvent.VK_W, false)) {
-            mPosition.addEqual(mForwardDirection.mul(speed * ts / pressedKeysCount));
+            mPosition.addEqual(mForwardDirection.mul(calculatedSpeed));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_S, false)) {
-            mPosition.subEqual(mForwardDirection.mul(speed * ts / pressedKeysCount));
+            mPosition.subEqual(mForwardDirection.mul(calculatedSpeed));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_A, false)) {
-            mPosition.subEqual(rightDirection.mul(speed * ts / pressedKeysCount));
+            mPosition.subEqual(rightDirection.mul(calculatedSpeed));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_D, false)) {
-            mPosition.addEqual(rightDirection.mul(speed * ts / pressedKeysCount));
+            mPosition.addEqual(rightDirection.mul(calculatedSpeed));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_Q, false)) {
-            mPosition.subEqual(upDirection.mul(speed * ts / pressedKeysCount));
+            mPosition.subEqual(upDirection.mul(calculatedSpeed));
             moved = true;
         }
 
         if (pressedKey.getOrDefault(KeyEvent.VK_E, false)) {
-            mPosition.addEqual(upDirection.mul(speed * ts / pressedKeysCount));
+            mPosition.addEqual(upDirection.mul(calculatedSpeed));
             moved = true;
         }
 
