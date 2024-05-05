@@ -144,4 +144,7 @@ public class Glm {
         return res;
     }
 
+    public static Vec3 mix(Vec3 x, Vec3 y, float a) {
+        return x.mul(a).add(y.mul(1.0f - a));
+    }
 }
